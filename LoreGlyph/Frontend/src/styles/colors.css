@@ -1,9 +1,16 @@
-:root{
-    --main-gradient: radial-gradient(circle at top left, #404656 0%, #47383f 68%, #754e45 100%, #6b4f50 71%);
-    --white: #fff;
-    --black: #000;
-    --middle-gray: #848484;
-    --middle-dark-gray: #757575;
-    --light-brown:#996C66;
-    --dark-gray:#404656;
+:root {
+  --main-gradient: radial-gradient(
+    circle at top left,
+    #404656 0%,
+    #47383f 68%,
+    #754e45 100%,
+    #6b4f50 71%
+  );
+  --white: #fff;
+  --black: #000;
+  --middle-gray: #848484;
+  --middle-dark-gray: #757575;
+  --light-brown: #996c66;
+  --dark-gray: #404656;
+  --red: #af0d0d;
 }

@@ -16,8 +16,8 @@ const routes = [
   { path: "/", redirect: "/home" },
   { path: "/home", name: "home", component: HomePage },
   {
-    path: "/account",
-    name: "account",
+    path: "/profile",
+    name: "profile",
     component: () => import("./views/AccountPage.vue"),
   },
   {
@@ -35,6 +35,20 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token");
+
+  const publicRoutes = ["/", "/home"];
+
+  if (!publicRoutes.includes(to.path) && !token) {
+    next("/home");
+  } else if (token && publicRoutes.includes(to.path)) {
+    next("/languages");
+  } else {
+    next();
+  }
 });
 
 createApp(App).use(router).mount("#app");

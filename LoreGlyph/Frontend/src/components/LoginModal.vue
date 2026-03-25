@@ -1,32 +1,34 @@
 <script setup>
-import { ref } from 'vue'
-import { authService } from '@/services/authService'
-import { useRouter } from 'vue-router' 
+import { ref } from "vue";
+import { authService } from "@/services/authService";
+import { useRouter } from "vue-router";
 
-const login = ref('')
-const password = ref('')
+const login = ref("");
+const password = ref("");
 
-const emit = defineEmits([
-  'close',
-  'openRegister',
-  'openReset'
-])
-const router = useRouter()
+const emit = defineEmits(["close", "openRegister", "openReset"]);
+
+const router = useRouter();
 
 const loginUser = async () => {
   try {
     const res = await authService.login({
       login: login.value,
-      password: password.value
-    })
+      password: password.value,
+    });
 
-    console.log('Успешный вход', res.data)
-    emit('close')
-    router.push('/languages')
+    console.log("Успешный вход", res.data);
+
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("userName", res.data.userName);
+    localStorage.setItem("login", res.data.login);
+
+    emit("close");
+    router.push("/languages");
   } catch (e) {
-    alert(e.response?.data || 'Ошибка входа')
+    alert(e.response?.data || "Ошибка входа");
   }
-}
+};
 </script>
 
 <template>
@@ -40,14 +42,9 @@ const loginUser = async () => {
 
     <br /><br />
 
-    
-    <button @click="emit('openRegister')">
-      Регистрация
-    </button>
+    <button @click="emit('openRegister')">Регистрация</button>
 
-    <button @click="emit('openReset')">
-      Забыли пароль?
-    </button>
+    <button @click="emit('openReset')">Забыли пароль?</button>
 
     <br /><br />
 
@@ -55,6 +52,4 @@ const loginUser = async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
