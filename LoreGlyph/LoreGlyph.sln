@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoreGlyph", "LoreGlyph.csproj", "{A10AFAD1-88CA-0999-859E-CC916290A624}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A10AFAD1-88CA-0999-859E-CC916290A624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A10AFAD1-88CA-0999-859E-CC916290A624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A10AFAD1-88CA-0999-859E-CC916290A624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A10AFAD1-88CA-0999-859E-CC916290A624}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB925A97-EF01-44A7-AE65-A21B24DF9494}
+	EndGlobalSection
+EndGlobal
