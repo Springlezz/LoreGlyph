@@ -9,7 +9,6 @@ const password = ref("");
 const emit = defineEmits(["close", "openRegister", "openReset"]);
 
 const router = useRouter();
-
 const loginUser = async () => {
   try {
     const res = await authService.login({
@@ -17,11 +16,7 @@ const loginUser = async () => {
       password: password.value,
     });
 
-    console.log("Успешный вход", res.data);
-
-    localStorage.setItem("token", res.data.token);
-    localStorage.setItem("userName", res.data.userName);
-    localStorage.setItem("login", res.data.login);
+    console.log("Успешный вход", res);
 
     emit("close");
     router.push("/languages");

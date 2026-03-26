@@ -84,6 +84,10 @@ body {
   border-bottom: 1px solid var(--middle-dark-gray);
 }
 
+.modal input:focus {
+  outline: none;
+}
+
 .modal button {
   font-family: "Montserrat-Regular", sans-serif;
   font-size: 1.5rem;

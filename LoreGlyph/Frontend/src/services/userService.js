@@ -1,7 +1,8 @@
-import axios from "axios";
+import api  from "./axiosInstance";
 
 const API = "http://localhost:5248/api/User";
 
 export const userService = {
-  resetPassword: (dto) => axios.post(`${API}/reset-forgotten-password`, dto),
+  resetPassword: (dto) => api.post("/User/reset-forgotten-password", dto),
+  getMe: () => api.get("/User/me"),
 };

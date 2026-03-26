@@ -22,10 +22,18 @@ namespace LoreGlyph.Controllers
 
         [HttpGet("me")]
         [Authorize]
-        public async Task<IActionResult?> GetMe(int userId)
+        public async Task<IActionResult?> GetMe()
         {
             try
             {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return BadRequest("UserId не найден в токене");
+                }
+                   
+                var userId = int.Parse(userIdClaim);
+
                 var result = await _userService.GetMe(userId);
                 return Ok(result);
             }
@@ -34,6 +42,7 @@ namespace LoreGlyph.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPost("reset-forgotten-password")]
         [AllowAnonymous]
