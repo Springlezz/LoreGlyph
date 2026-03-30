@@ -1,7 +1,7 @@
 <template>
   <div class="modal-overlay">
     <header class="header">
-      <div class="left-header" title="Вернуться на главную страницу">
+      <div class="left-header">
         <img class="logo" src="../assets/cube_black_logo.svg" alt="logo" />
         <h1>LoreGlyph</h1>
       </div>
@@ -116,18 +116,18 @@ main {
 }
 
 .colored-black-text {
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
   color: var(--black);
 }
 
 .colored-text-brown {
   color: var(--light-brown);
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
 }
 
 .attention-text {
   padding: 2rem 0rem;
-  font-family: "Montserrat-Light";
+  font-family: "Montserrat-Light", sans-serif;
   color: var(--black);
   font-size: 2.2rem;
   width: 36rem;

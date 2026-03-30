@@ -1,11 +1,15 @@
 <template>
   <header class="header">
-    <div class="left-header" title="Вернуться на главную страницу">
+    <div
+      class="left-header"
+      @click="$router.push('/languages')"
+      title="Вернуться на главную страницу"
+    >
       <img class="logo" src="../assets/cube_black_logo.svg" alt="logo" />
       <h1>LoreGlyph</h1>
     </div>
     <div class="right-header">
-      <button @click="$router.back()" class="right-header-buttons">
+      <button @click="$router.push('/languages')" class="right-header-buttons">
         Вернуться
       </button>
       <p>|</p>
@@ -113,7 +117,7 @@ main {
 }
 
 .title {
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
   font-size: 2.5rem;
   text-align: center;
 }

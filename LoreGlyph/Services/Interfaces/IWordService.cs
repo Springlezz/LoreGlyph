@@ -5,7 +5,7 @@ namespace LoreGlyph.Services.Interfaces
 {
     public interface IWordService
     {
-        Task<IEnumerable<WordDto>> GetAllAsync(int languageId);
+        Task<IEnumerable<WordDto>> GetAllAsync(int languageId, int userId);
         Task<WordDto> CreateAsync(CreateWordDto dto, int languageId, int userId);
         Task<bool> DeleteAsync(int wordId, int userId);
         Task<bool> UpdateAsync(int wordId, UpdateWordDto dto);

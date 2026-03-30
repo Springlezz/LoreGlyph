@@ -15,10 +15,10 @@ namespace LoreGlyph.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<WordDto>> GetAllAsync(int userId)
+        public async Task<IEnumerable<WordDto>> GetAllAsync(int userId, int languageId)
         {
             return await _context.Words
-                .Where (word => word.Language.UserId == userId)
+                .Where (word => word.Language.UserId == userId && word.LanguageId == languageId)
                 .OrderBy (word => word.Order)
                 .Select(word => new WordDto(
                                       word.WordId,

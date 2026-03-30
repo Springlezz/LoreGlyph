@@ -64,8 +64,6 @@
             >
               Удалить
             </button>
-
-            <button class="download-table">Скачать таблицу</button>
           </div>
         </div>
         <img class="line" src="../assets/Line.svg" />
@@ -129,7 +127,7 @@ main {
 }
 
 .big-title {
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
   font-size: 2.5rem;
 }
 
@@ -137,12 +135,12 @@ main {
   font-size: 2.5rem;
 }
 .bold-text {
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
 }
 
 .description-text {
   font-size: 1.5rem;
-  font-family: "Montserrat-Light";
+  font-family: "Montserrat-Light", sans-serif;
 }
 
 .picture {
@@ -168,7 +166,7 @@ main {
 }
 
 .edit-language-button {
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
   font-size: 1.3rem;
   border: none;
   background: var(--main-gradient);
@@ -176,6 +174,12 @@ main {
   padding: 2rem 1rem;
   border-radius: 2rem;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-language-button:hover {
+  transform: scale(1.1);
+  transition: transform 0.4s ease-in-out;
 }
 .right-item {
   display: flex;
@@ -188,20 +192,6 @@ main {
   gap: 0.8rem;
 }
 
-.download-table {
-  font-family: "Montserrat-Bold";
-  font-size: 1.3rem;
-  border: none;
-  background-color: var(--white);
-  padding: 2rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
-}
-
 .bottom-section-items {
   display: flex;
   flex-direction: row;
@@ -211,7 +201,7 @@ main {
 }
 
 .delete-language {
-  font-family: "Montserrat-Bold";
+  font-family: "Montserrat-Bold", sans-serif;
   font-size: 1.3rem;
   border: none;
   background-color: var(--white);
@@ -223,6 +213,12 @@ main {
     rgb(105, 11, 11) 0px 0.0625em 0.0625em,
     rgba(255, 8, 8, 0.25) 0px 0.125em 0.5em,
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+  transition: all 0.3s ease;
+}
+
+.delete-language:hover {
+  transform: scale(1.1);
+  transition: transform 0.4s ease-in-out;
 }
 
 .item-languages {

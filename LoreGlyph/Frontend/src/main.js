@@ -26,7 +26,7 @@ const routes = [
     component: () => import("./views/LanguagesPage.vue"),
   },
   {
-    path: "/languages/words",
+    path: "/language/:id",
     name: "words",
     component: () => import("./views/WordsPage.vue"),
   },
@@ -37,18 +37,37 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+const isTokenValid = () => {
   const token = localStorage.getItem("token");
+  if (!token) return false;
 
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const isValid = payload.exp * 1000 > Date.now();
+
+    if (!isValid) {
+      localStorage.removeItem("token");
+      return false;
+    }
+    return true;
+  } catch (error) {
+    localStorage.removeItem("token");
+    return false;
+  }
+};
+
+router.beforeEach((to, from) => {
+  const tokenValid = isTokenValid();
   const publicRoutes = ["/", "/home"];
 
-  if (!publicRoutes.includes(to.path) && !token) {
-    next("/home");
-  } else if (token && publicRoutes.includes(to.path)) {
-    next("/languages");
-  } else {
-    next();
+  if (!publicRoutes.includes(to.path) && !tokenValid) {
+    return "/home";
   }
-});
 
+  if (tokenValid && publicRoutes.includes(to.path)) {
+    return "/languages";
+  }
+
+  return true;
+});
 createApp(App).use(router).mount("#app");
