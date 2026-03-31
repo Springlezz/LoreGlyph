@@ -36,7 +36,9 @@
       </div>
     </div>
     <div class="sections">
-      <button class="warning-button">Удалить аккаунт</button>
+      <button @click="deleteAccount" class="warning-button">
+        Удалить аккаунт
+      </button>
       <button @click="changePassword" class="save-changes-button">
         Сохранить изменения
       </button>
@@ -164,6 +166,31 @@ const changePassword = async () => {
 const logout = () => {
   localStorage.clear();
   window.location.href = "/home";
+};
+
+const getUserIdFromToken = () => {
+  const token = localStorage.getItem("token");
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+    return userId;
+  } catch (e) {
+    return null;
+  }
+};
+
+const deleteAccount = async () => {
+  if (!confirm("Удалить профиль. Вы не сможете его восстановить")) return;
+  const userId = getUserIdFromToken();
+
+  try {
+    await userService.deleteAccount(userId);
+    localStorage.clear();
+    window.location.href = "/home";
+  } catch (e) {
+    alert("Ошибка при удалении аккаунта");
+  }
 };
 
 onMounted(async () => {
