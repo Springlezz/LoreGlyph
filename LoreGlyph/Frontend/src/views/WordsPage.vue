@@ -24,51 +24,61 @@
       </button>
       <button @click="addWord" class="add-word">Добавить слово</button>
     </div>
-    <input class="filter" type="text" placeholder="Поиск по словам..." />
+    <div id="search">
+      <input
+        v-model="filterQuery"
+        class="filter"
+        type="text"
+        placeholder="Поиск по словам..."
+      />
 
-    <div class="bottom-section-items" ref="dragContainer">
-      <div
-        v-for="(word, index) in words"
-        :key="word.wordId"
-        :data-id="word.wordItem"
-      >
-        <div class="item-words">
-          <div class="left-section">
-            <img class="picture" src="../assets/burger.svg" />
+      <div class="bottom-section-items" ref="dragContainer">
+        <div
+          v-for="(word, index) in filteredWords"
+          :key="word.wordId"
+          :data-id="word.wordItem"
+        >
+          <div class="item-words">
+            <div class="left-section">
+              <img class="picture" src="../assets/burger.svg" />
 
-            <template v-if="editingId !== word.wordId">
-              <h3>{{ word.text }}</h3>
-              <h3 class="transcription">{{ word.transcription }}</h3>
-              <h3>{{ word.translation }}</h3>
-            </template>
+              <template v-if="editingId !== word.wordId">
+                <h3>{{ word.text }}</h3>
+                <h3 class="transcription">{{ word.transcription }}</h3>
+                <h3>{{ word.translation }}</h3>
+              </template>
 
-            <template v-else>
-              <input
-                class="input-word-translate-transcription"
-                v-model="editForm.text"
-                placeholder="Слово"
-              />
-              <input
-                class="input-word-translate-transcription"
-                v-model="editForm.transcription"
-                placeholder="Транскрипция"
-              />
-              <input
-                class="input-word-translate-transcription"
-                v-model="editForm.translation"
-                placeholder="Перевод"
-              />
-            </template>
-          </div>
+              <template v-else>
+                <input
+                  class="input-word-translate-transcription"
+                  v-model="editForm.text"
+                  placeholder="Слово"
+                />
+                <input
+                  class="input-word-translate-transcription"
+                  v-model="editForm.transcription"
+                  placeholder="Транскрипция"
+                />
+                <input
+                  class="input-word-translate-transcription"
+                  v-model="editForm.translation"
+                  placeholder="Перевод"
+                />
+              </template>
+            </div>
 
-          <div class="right-section">
-            <button class="edit-word-button" @click="toggleEdit(word)">
-              {{ editingId === word.wordId ? "Сохранить" : "Редактировать" }}
-            </button>
+            <div class="right-section">
+              <button class="edit-word-button" @click="toggleEdit(word)">
+                {{ editingId === word.wordId ? "Сохранить" : "Редактировать" }}
+              </button>
 
-            <button class="delete-word-button" @click="deleteWord(word.wordId)">
-              Удалить
-            </button>
+              <button
+                class="delete-word-button"
+                @click="deleteWord(word.wordId)"
+              >
+                Удалить
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -77,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import * as XLSX from "xlsx";
 import Sortable from "sortablejs";
@@ -99,6 +109,23 @@ const editForm = ref({
 
 const STORAGE_KEY = `words_${languageId.value}`;
 
+const filterQuery = ref("");
+
+const filteredWords = computed(() => {
+  if (!filterQuery.value) {
+    return words.value;
+  }
+
+  const comp = filterQuery.value.toLowerCase().trim();
+
+  return words.value.filter((word) => {
+    return (
+      word.text.toLowerCase().includes(comp) ||
+      word.transcription.toLowerCase().includes(comp) ||
+      word.translation.toLowerCase().includes(comp)
+    );
+  });
+});
 const saveToLocalStorage = () => {
   if (!words.value.length && localStorage.getItem(STORAGE_KEY)) {
     return;
@@ -293,7 +320,7 @@ onMounted(() => {
 const downloadTable = () => {
   const sortedWords = [...words.value].sort((a, b) => a.order - b.order);
   const exportData = sortedWords.map((word, index) => ({
-    '№': index + 1,
+    "№": index + 1,
     "#": word.order,
     Слово: word.text,
     Транскрипция: word.transcription,
@@ -450,6 +477,10 @@ main {
   font-size: 1.5rem;
   padding: 10px 10px 10px 5px;
   color: var(--middle-dark-gray);
+}
+
+.filter:focus {
+  outline: none;
 }
 
 .bottom-section-items {
