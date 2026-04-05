@@ -1,7 +1,7 @@
 services:
   loreglyph:
     build:
-      context: ./
+      context: ./LoreGlyph/
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
