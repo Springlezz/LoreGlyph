@@ -4,6 +4,7 @@ using LoreGlyph.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
@@ -106,6 +107,10 @@ namespace LoreGlyph
             }
 
             //app.UseHttpsRedirection();
+
+            app.UseDefaultFiles();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
 
