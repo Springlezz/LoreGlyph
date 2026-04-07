@@ -106,9 +106,22 @@ namespace LoreGlyph
                 app.UseSwaggerUI();
             }
 
-            //app.UseHttpsRedirection();
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                try
+                {
+                    dbContext.Database.MigrateAsync().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    dbContext.Database.EnsureCreated();
+                }
+            }
 
-            app.UseDefaultFiles();
+                //app.UseHttpsRedirection();
+
+                app.UseDefaultFiles();
 
             app.UseStaticFiles();
 
