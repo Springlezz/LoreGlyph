@@ -16,6 +16,11 @@
 # Mono auto generated files
 mono_crash.*
 
+# Docker secrets
+.env
+.env.*
+!.env.example
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

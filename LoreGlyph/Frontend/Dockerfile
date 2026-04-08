@@ -14,16 +14,10 @@ FROM node:20-alpine AS production-stage
 
 WORKDIR /app
 
-RUN npm install -g serve@latest
+FROM nginx:alpine
 
-COPY --from=build-stage /app/dist ./dist
-
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001 && \
-    chown -R nodejs:nodejs /app
-
-USER nodejs
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
-
-CMD ["serve", "-s", "dist", "-l", "80"]
+CMD ["nginx", "-g", "daemon off;"]
