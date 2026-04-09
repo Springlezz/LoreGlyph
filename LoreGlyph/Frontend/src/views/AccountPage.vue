@@ -46,6 +46,82 @@
   </main>
 </template>
 
+<script setup>
+import { ref, onMounted } from "vue";
+import { userService } from "@/services/userService";
+import { authService } from "@/services/authService";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
+
+const userName = ref("");
+const login = ref("");
+const createdBy = ref("");
+
+const oldPassword = ref("");
+const newPassword = ref("");
+
+const changePassword = async () => {
+  try {
+    await authService.resetPassword({
+      Login: login.value,
+      OldPassword: oldPassword.value,
+      NewPassword: newPassword.value,
+    });
+
+    toast.success("Пароль изменён");
+  } catch (e) {
+    toast.error(e.response?.data || "Ошибка");
+  }
+};
+
+const logout = () => {
+  localStorage.clear();
+  window.location.href = "/home";
+};
+
+const getUserIdFromToken = () => {
+  const token = localStorage.getItem("token");
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+
+    const userId =
+      payload[
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+      ];
+    return userId;
+  } catch (e) {
+    return null;
+  }
+};
+
+const deleteAccount = async () => {
+  if (!confirm("Удалить профиль. Вы не сможете его восстановить")) return;
+  const userId = getUserIdFromToken();
+
+  try {
+    await userService.deleteAccount(userId);
+    localStorage.clear();
+    window.location.href = "/home";
+  } catch (e) {
+    toast.error("Ошибка при удалении аккаунта");
+  }
+};
+
+onMounted(async () => {
+  try {
+    const res = await userService.getMe();
+    const data = res.data;
+
+    userName.value = data.userName;
+    login.value = data.login;
+    createdBy.value = new Date(data.createdBy).toLocaleDateString();
+  } catch (e) {
+    toast.error("Ошибка загрузки профиля:", e);
+  }
+});
+</script>
+
 <style scoped>
 .save-changes-button {
   color: var(--green);
@@ -136,73 +212,3 @@ main {
   border-bottom: 1px solid var(--middle-dark-gray);
 }
 </style>
-
-<script setup>
-import { ref, onMounted } from "vue";
-import { userService } from "@/services/userService";
-import { authService } from "@/services/authService";
-
-const userName = ref("");
-const login = ref("");
-const createdBy = ref("");
-
-const oldPassword = ref("");
-const newPassword = ref("");
-
-const changePassword = async () => {
-  try {
-    await authService.resetPassword({
-      Login: login.value,
-      OldPassword: oldPassword.value,
-      NewPassword: newPassword.value,
-    });
-
-    alert("Пароль изменён");
-  } catch (e) {
-    alert(e.response?.data || "Ошибка");
-  }
-};
-
-const logout = () => {
-  localStorage.clear();
-  window.location.href = "/home";
-};
-
-const getUserIdFromToken = () => {
-  const token = localStorage.getItem("token");
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-
-    const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-    return userId;
-  } catch (e) {
-    return null;
-  }
-};
-
-const deleteAccount = async () => {
-  if (!confirm("Удалить профиль. Вы не сможете его восстановить")) return;
-  const userId = getUserIdFromToken();
-
-  try {
-    await userService.deleteAccount(userId);
-    localStorage.clear();
-    window.location.href = "/home";
-  } catch (e) {
-    alert("Ошибка при удалении аккаунта");
-  }
-};
-
-onMounted(async () => {
-  try {
-    const res = await userService.getMe();
-    const data = res.data;
-
-    userName.value = data.userName;
-    login.value = data.login;
-    createdBy.value = new Date(data.createdBy).toLocaleDateString();
-  } catch (e) {
-    console.error("Ошибка загрузки профиля:", e);
-  }
-});
-</script>

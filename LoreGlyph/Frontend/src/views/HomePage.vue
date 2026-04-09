@@ -59,9 +59,7 @@
         />
       </div>
     </main>
-    <footer>
-      <FooterComponent />
-    </footer>
+    <FooterComponent />
   </div>
 </template>
 
@@ -102,6 +100,7 @@ p {
 }
 
 main {
+  margin-top: 2rem;
   padding: 8rem 7.5rem;
   display: flex;
   justify-content: space-between;

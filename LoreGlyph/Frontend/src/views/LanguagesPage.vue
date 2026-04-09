@@ -77,6 +77,11 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { languageService } from "@/services/languageService";
 import CreateLanguageModal from "@/components/CreateLanguageModal.vue";
+import { useToast } from "vue-toastification";
+
+import FooterComponent from "@/components/FooterComponent.vue";
+
+const toast = useToast();
 
 const router = useRouter();
 
@@ -92,7 +97,7 @@ const deleteLanguage = async (id) => {
     await languageService.delete(id);
     await loadLanguages();
   } catch (e) {
-    alert("Ошибка удаления");
+    toast.error("Ошибка удаления");
   }
 };
 

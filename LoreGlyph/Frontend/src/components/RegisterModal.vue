@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { authService } from '@/services/authService'
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const userName = ref('')
 const login = ref('')
 const password = ref('')
@@ -17,11 +19,14 @@ const register = async () => {
       password: password.value,
       secretWord: secretWord.value
     })
-
-    alert('Регистрация успешна')
+    if (!userName.value || !login.value || !password.value || !secretWord.value) {
+      toast.error('Заполните все поля')
+      return
+    }
+    toast.success('Регистрация прошла успешно')
     emit('close')
   } catch (e) {
-    alert(e.response?.data || 'Ошибка регистрации')
+    toast.error(e.response?.data || 'Ошибка регистрации')
   }
 }
 </script>

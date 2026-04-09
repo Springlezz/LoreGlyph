@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 import App from "./App.vue";
 import HomePage from "./views/HomePage.vue";
@@ -11,6 +13,24 @@ import "./styles/reset.css";
 import "./styles/colors.css";
 import "./styles/fonts.css";
 import "./styles/styles.css";
+
+const options = {
+  transition: "Vue-Toastification__fade",
+  maxToasts: 5,
+  newestOnTop: true,
+  position: "top-center",
+  timeout: 5000,
+  closeOnClick: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: true,
+  draggable: true,
+  draggablePercent: 0.6,
+  showCloseButtonOnHover: false,
+  hideProgressBar: true,
+  closeButton: "button",
+  icon: true,
+  rtl: false,
+};
 
 const routes = [
   { path: "/", redirect: "/home" },
@@ -70,4 +90,4 @@ router.beforeEach((to, from) => {
 
   return true;
 });
-createApp(App).use(router).mount("#app");
+createApp(App).use(router).use(Toast, options).mount("#app");

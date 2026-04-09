@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue'
 import { userService } from '@/services/userService'
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const login = ref('')
 const secretWord = ref('')
@@ -16,10 +19,10 @@ const reset = async () => {
       newPassword: newPassword.value
     })
 
-    alert('Пароль изменён')
+    toast.success('Пароль сброшен')
     emit('close')
   } catch (e) {
-    alert(e.response?.data || 'Ошибка сброса')
+    toast.success(e.response?.data || 'Ошибка сброса')
   }
 }
 </script>

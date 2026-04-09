@@ -31,12 +31,18 @@ body {
 }
 
 .header {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6rem;
+  background: var(--main-gradient);
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 1.2rem 7.5rem;
-  background: var(--main-gradient);
+  align-items: center;
   color: var(--white);
+  margin-bottom: 2rem;
 }
 
 .left-header {

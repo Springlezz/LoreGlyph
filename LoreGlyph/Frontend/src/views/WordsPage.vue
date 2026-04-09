@@ -92,6 +92,9 @@ import { useRoute } from "vue-router";
 import * as XLSX from "xlsx";
 import Sortable from "sortablejs";
 import { wordService } from "@/services/wordService";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const route = useRoute();
 const languageId = ref(route.params.id);
@@ -158,7 +161,7 @@ const loadWords = async () => {
       saveToLocalStorage();
     }
   } catch (e) {
-    alert("Ошибка загрузки с сервера");
+    toast.error("Ошибка загрузки с сервера");
     words.value = savedWords;
     if (words.value.length > 0) {
       saveToLocalStorage();
@@ -180,7 +183,7 @@ const addWord = async () => {
     saveToLocalStorage();
     startEdit(res.data);
   } catch (e) {
-    alert("Ошибка добавления слова");
+    toast.error("Ошибка добавления слова");
     const tempId = Date.now();
     const tempWord = {
       wordId: tempId,
@@ -231,7 +234,7 @@ const saveEdit = async (wordId) => {
     editingId.value = null;
     editForm.value = { text: "", transcription: "", translation: "" };
   } catch (e) {
-    alert("Ошибка сохранения слова");
+    toast.error("Ошибка сохранения слова");
     const index = words.value.findIndex((w) => w.wordId === wordId);
     if (index !== -1) {
       words.value[index] = {
@@ -261,7 +264,9 @@ const toggleEdit = (word) => {
 };
 
 const deleteWord = async (wordId) => {
-  if (!confirm("Удалить слово?")) return;
+  if (!confirm("Удалить слово?")) {
+    return;
+  }
 
   try {
     await wordService.delete(wordId);
@@ -272,7 +277,7 @@ const deleteWord = async (wordId) => {
       cancelEdit();
     }
   } catch (e) {
-    console.error("Ошибка удаления:", e);
+    toast.error("Ошибка удаления:", e);
     words.value = words.value.filter((w) => w.wordId !== wordId);
     saveToLocalStorage();
 
@@ -309,7 +314,7 @@ onMounted(() => {
           try {
             await wordService.updateOrder(languageId.value, updatedOrder);
           } catch (e) {
-            alert("Ошибка сохранения порядка");
+            toast.error("Ошибка сохранения порядка");
           }
         }
       },
@@ -346,6 +351,19 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+@media screen and (max-width: 768px) {
+  .download-table {
+    font-size: 0.4rem;
+    padding: 0.5rem 0.5rem;
+    width: 30%;
+  }
+
+  .add-word {
+    font-size: 0.4rem;
+    padding: 0.5rem 0.5rem;
+    width: 30%;
+  }
+}
 .input-word-translate-transcription {
   padding: 0.6rem;
   border-radius: 1rem;
@@ -500,14 +518,21 @@ main {
   gap: 2rem;
 }
 
-.left-section {
+/* .left-section {
   display: flex;
   align-items: center;
   gap: 2rem;
   font-size: 1.5rem;
   margin-right: 3rem;
+} */
+.left-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.2rem;
+  margin-right: 1rem;
 }
-
 .right-section {
   display: flex;
   flex-direction: column;

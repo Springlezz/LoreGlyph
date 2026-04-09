@@ -7,7 +7,6 @@
 
 <style scoped>
 .footer {
-  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,6 +16,7 @@
   background-color: var(--dark-gray);
   color: var(--white);
   font-size: 1.2rem;
+  margin-top: auto;
 }
 
 a {
