@@ -11,7 +11,7 @@
           @click="openRegister"
           href="/login"
         >
-          Зарегистрироваться
+          Регистрация
         </button>
         <p>|</p>
         <button class="right-header-buttons" @click="openLogin" href="/login">
@@ -43,7 +43,6 @@
           Чтобы создать свой язык, вам нужно зарегистрироваться или войти в
           аккаунт
         </h1>
-
         <button @click="openRegister" class="main-menu-button">
           Регистрация аккаунта
         </button>
@@ -51,6 +50,7 @@
           Войти в аккаунт
         </button>
       </div>
+
       <div class="right-section">
         <img
           class="picture-with-elf"
@@ -101,14 +101,15 @@ p {
 
 main {
   margin-top: 2rem;
-  padding: 8rem 7.5rem;
+  padding: 0rem 2rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 
 .greetings {
-  font-size: 1.6rem;
-  width: 46rem;
+  font-size: 1.2rem;
+  width: 100%;
   word-break: break-word;
   word-wrap: break-word;
   white-space: normal;
@@ -128,8 +129,8 @@ main {
   padding: 2rem 0rem;
   font-family: "Montserrat-Light", sans-serif;
   color: var(--black);
-  font-size: 2.2rem;
-  width: 36rem;
+  font-size: 1.2rem;
+  width: 100%;
   word-break: break-word;
   word-wrap: break-word;
   white-space: normal;
@@ -138,13 +139,9 @@ main {
 .picture-with-elf {
   height: auto;
   width: 100%;
-  max-width: 60rem;
+  max-width: 100%;
   border-radius: 2rem;
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
-}
-
-main {
-  padding: 8rem 7.5rem;
 }
 
 .main-menu-button:hover {
@@ -152,27 +149,23 @@ main {
   transition: transform 0.4s ease-in-out;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 1025px) {
   main {
-    padding: 3rem 2rem;
-    flex-direction: column;
+    padding: 8rem 2.5rem;
+    flex-direction: row;
+  }
+
+  .greetings {
+    width: 46rem;
+  }
+
+  .attention-text {
+    width: 36rem;
+    font-size: 1.5rem;
   }
 
   .picture-with-elf {
-    height: auto;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .header {
-    padding: 3.2rem 2rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .main-menu-button {
-    text-align: center;
-    margin: 0.7rem 0.2rem 1.8rem;
+    max-width: 60rem;
   }
 }
 </style>

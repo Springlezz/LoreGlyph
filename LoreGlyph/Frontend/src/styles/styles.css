@@ -26,8 +26,16 @@ body {
 
 /* Шапка */
 .logo {
-  height: 5rem;
-  width: auto;
+  width: 2.4rem;
+}
+
+@media (max-width: 1024px) {
+  .logo {
+    height: 4rem;
+  }
+  .header{
+    padding: 1.2rem 2rem;
+  }
 }
 
 .header {
@@ -39,16 +47,19 @@ body {
   z-index: 1000;
   display: flex;
   justify-content: space-between;
-  padding: 1.2rem 7.5rem;
+  padding: 1.2rem 1.2rem;
   align-items: center;
   color: var(--white);
-  margin-bottom: 2rem;
+}
+
+.left-header h1{
+  font-size: 1rem;
 }
 
 .left-header {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 8px;
   cursor: pointer;
 }
 
@@ -56,9 +67,7 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  font-size: 1.5rem;
 }
-
 .right-header-buttons {
   color: var(--white);
   text-decoration: none;
@@ -66,7 +75,7 @@ body {
   cursor: pointer;
   border: none;
   background: none;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .right-header-buttons:hover {
@@ -82,6 +91,7 @@ body {
   font-weight: 600;
   color: var(--middle-gray);
   font-style: regular;
+  font-size: 1.5rem;
 }
 
 /* Модальные окна */
@@ -92,7 +102,8 @@ body {
   margin: 1rem;
   padding: 10px 10px 10px 5px;
   display: block;
-  width: 500px;
+  width: 100%;
+  max-width: 100%;
   border: none;
   border-bottom: 1px solid var(--middle-dark-gray);
 }
@@ -111,6 +122,7 @@ body {
   border: none;
   color: var(--white);
   cursor: pointer;
+  width: calc(100% - 2rem);
 }
 
 .modal {
@@ -119,13 +131,15 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   background: var(--white);
-  padding: 20px;
-  border-radius: 10px;
+  padding: 15px;
+  border-radius: 20px;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
   animation: modalAppear 0.3s ease forwards;
+  width: calc(100% - 30px);
+  max-width: 100%;
 }
 
 .modal::before {
@@ -141,6 +155,49 @@ body {
     rgba(0, 0, 0, 0.24) 0px 1px 2px;
   z-index: -1;
   animation: fadeIn 0.3s ease forwards;
+}
+
+@media (min-width: 768px) {
+  .greetings-titles {
+    font-size: 3rem;
+  }
+  
+  .header {
+    padding: 1.2rem 7rem;
+    height: 8rem;
+  }
+
+  .left-header h1{
+    font-size: 1.5rem;
+    
+  }
+
+  .right-header-buttons {
+    font-size: 1.8rem;
+    
+  }
+
+  .colored-black-text, .colored-brown-text{
+    font-size: 3.5rem;
+  }
+
+  .logo {
+    width: 5rem;
+  }
+  .modal input {
+    width: 500px;
+    max-width: 500px;
+  }
+
+  .modal button {
+    width: auto;
+  }
+
+  .modal {
+    padding: 20px;
+    width: auto;
+    max-width: 90vw;
+  }
 }
 
 @keyframes modalAppear {

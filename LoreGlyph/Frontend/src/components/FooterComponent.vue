@@ -7,16 +7,24 @@
 
 <style scoped>
 .footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4.3rem 7.5rem;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 100px;
-  background-color: var(--dark-gray);
+  background: var(--dark-gray);
+  z-index: 1000;
+  padding: 1rem;
+  display: flex;
   color: var(--white);
-  font-size: 1.2rem;
-  margin-top: auto;
+  justify-content: space-between;
+  margin-top: 1rem;
+  
+}
+
+@media (min-width: 768px){
+  .footer {
+    font-size: 1.5rem;
+    padding: 4rem;
+  }
 }
 
 a {
