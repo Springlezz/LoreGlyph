@@ -28,6 +28,7 @@ services:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
       - Jwt__Key=${JWT_KEY}
       - Jwt__Issuer=${JWT_ISSUER:-LoreGlyph}
+      - ASPNETCORE_URLS=http://*:8080
       - Jwt__Audience=${JWT_AUDIENCE:-LoreGlyphUsers}
     depends_on:
       postgres:
