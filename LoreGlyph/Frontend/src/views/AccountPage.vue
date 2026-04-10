@@ -68,6 +68,9 @@ const changePassword = async () => {
       OldPassword: oldPassword.value,
       NewPassword: newPassword.value,
     });
+    if (!oldPassword.value || !newPassword.value) {
+      toast.error("Заполните все поля");
+    }
 
     toast.success("Пароль изменён");
   } catch (e) {
@@ -248,93 +251,58 @@ input::placeholder {
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
 }
 @media (min-width: 768px) {
-  .save-changes-button {
-    color: var(--green);
-    border: none;
-    font-family: "Montserrat-Bold", sans-serif;
-    background: none;
-    font-size: 1.5rem;
-    padding: 1rem 1rem;
-    border-radius: 2rem;
-    box-shadow:
-      rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    cursor: pointer;
+  main {
+    padding: 2.5rem 3rem;
   }
 
-  .warning-button {
-    color: var(--red);
-    border: none;
-    font-family: "Montserrat-Bold", sans-serif;
-    background: none;
-    font-size: 1.5rem;
-    padding: 1rem 1rem;
-    border-radius: 2rem;
-    box-shadow:
-      rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    cursor: pointer;
-  }
-  input {
-    font-family: "Montserrat-Regular", sans-serif;
-    font-size: 1.5rem;
-    margin: 1rem;
-    padding: 10px 10px 10px 5px;
-    display: block;
-    width: 500px;
-    border: none;
-    border-bottom: 1px solid var(--middle-dark-gray);
-  }
-
-  input:focus {
-    outline: none;
+  .title {
+    font-size: 2.3rem;
   }
 
   .circle {
-    width: 25rem;
-    height: 25rem;
-    border-radius: 50%;
-    background: var(--middle-dark-gray);
+    width: 20rem;
+    height: 20rem;
   }
 
   .sections {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    width: 100%;
-    margin-top: 2rem;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 5rem;
   }
 
-  .center-information {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+  .left-sections,
+  .right-sections {
+    width: auto;
+    min-width: 280px;
+    align-items: flex-start;
   }
 
-  main {
-    padding: 3rem 7.5rem;
-  }
-
-  .title {
-    font-family: "Montserrat-Bold", sans-serif;
-    font-size: 2.5rem;
-    text-align: center;
+  input {
+    font-size: 1.5rem;
+    margin: 1rem 0;
+    max-width: 350px;
   }
 
   .information {
-    font-family: "Montserrat-Regular", sans-serif;
     font-size: 1.5rem;
-    margin: 1rem;
-    padding: 10px 10px 10px 5px;
-    display: block;
-    width: 500px;
-    border: none;
-    color: var(--middle-dark-gray);
-    border-bottom: 1px solid var(--middle-dark-gray);
+    margin: 1rem 0;
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .save-changes-button,
+  .warning-button {
+    font-size: 1.6rem;
+    padding: 1.5rem 2.5rem;
+    width: auto;
+    min-width: 250px;
+  }
+
+  .sections:last-of-type {
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
   }
 }
 </style>
