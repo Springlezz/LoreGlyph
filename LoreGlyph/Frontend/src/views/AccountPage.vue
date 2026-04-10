@@ -123,64 +123,34 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.save-changes-button {
-  color: var(--green);
-  border: none;
-  font-family: "Montserrat-Bold", sans-serif;
-  background: none;
-  font-size: 1.5rem;
-  padding: 1rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
+main {
+  padding: 1.5rem 1rem;
 }
 
-.warning-button {
-  color: var(--red);
-  border: none;
+.title {
   font-family: "Montserrat-Bold", sans-serif;
-  background: none;
-  font-size: 1.5rem;
-  padding: 1rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
-}
-input {
-  font-family: "Montserrat-Regular", sans-serif;
-  font-size: 1.5rem;
-  margin: 1rem;
-  padding: 10px 10px 10px 5px;
-  display: block;
-  width: 500px;
-  border: none;
-  border-bottom: 1px solid var(--middle-dark-gray);
-}
-
-input:focus {
-  outline: none;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  word-break: break-word;
 }
 
 .circle {
-  width: 25rem;
-  height: 25rem;
+  width: 15rem;
+  height: 15rem;
   border-radius: 50%;
   background: var(--middle-dark-gray);
+  margin: 0 auto;
 }
 
 .sections {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2rem;
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .center-information {
@@ -188,27 +158,183 @@ input:focus {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  width: 100%;
 }
 
-main {
-  padding: 3rem 7.5rem;
+input {
+  font-family: "Montserrat-Regular", sans-serif;
+  font-size: 1.4rem;
+  margin: 0.8rem 0;
+  padding: 1rem 1rem 1rem 0.5rem;
+  display: block;
+  width: 110%;
+  border: none;
+  border-bottom: 0.1px solid var(--middle-dark-gray);
+  background: transparent;
+  transition: border-color 0.3s ease;
 }
 
-.title {
-  font-family: "Montserrat-Bold", sans-serif;
-  font-size: 2.5rem;
-  text-align: center;
+input:focus {
+  outline: none;
+  border-bottom-color: var(--light-brown);
+}
+
+input::placeholder {
+  color: var(--middle-dark-gray);
+  opacity: 0.7;
 }
 
 .information {
   font-family: "Montserrat-Regular", sans-serif;
-  font-size: 1.5rem;
-  margin: 1rem;
-  padding: 10px 10px 10px 5px;
+  font-size: 1.4rem;
+  margin: 0.8rem 0;
+  padding: 1rem 1rem 1rem 0.5rem;
   display: block;
-  width: 500px;
+  width: 100%;
   border: none;
   color: var(--middle-dark-gray);
-  border-bottom: 1px solid var(--middle-dark-gray);
+  border-bottom: 0.1px solid var(--middle-dark-gray);
+  word-break: break-word;
+}
+
+.save-changes-button {
+  color: var(--green);
+  border: none;
+  font-family: "Montserrat-Bold", sans-serif;
+  background: none;
+  font-size: 1.4rem;
+  padding: 1.2rem 1rem;
+  border-radius: 2rem;
+  box-shadow:
+    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.save-changes-button:hover {
+  transform: scale(1.02);
+  box-shadow:
+    rgba(0, 0, 0, 0.35) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.35) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+}
+
+.warning-button {
+  color: var(--red);
+  border: none;
+  font-family: "Montserrat-Bold", sans-serif;
+  background: none;
+  font-size: 1.4rem;
+  padding: 1.2rem 1rem;
+  border-radius: 2rem;
+  box-shadow:
+    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.warning-button:hover {
+  transform: scale(1.02);
+  background: rgba(255, 0, 0, 0.05);
+  box-shadow:
+    rgba(255, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+    rgba(255, 0, 0, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+}
+@media (min-width: 768px) {
+  .save-changes-button {
+    color: var(--green);
+    border: none;
+    font-family: "Montserrat-Bold", sans-serif;
+    background: none;
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    border-radius: 2rem;
+    box-shadow:
+      rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    cursor: pointer;
+  }
+
+  .warning-button {
+    color: var(--red);
+    border: none;
+    font-family: "Montserrat-Bold", sans-serif;
+    background: none;
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    border-radius: 2rem;
+    box-shadow:
+      rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
+      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    cursor: pointer;
+  }
+  input {
+    font-family: "Montserrat-Regular", sans-serif;
+    font-size: 1.5rem;
+    margin: 1rem;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 500px;
+    border: none;
+    border-bottom: 1px solid var(--middle-dark-gray);
+  }
+
+  input:focus {
+    outline: none;
+  }
+
+  .circle {
+    width: 25rem;
+    height: 25rem;
+    border-radius: 50%;
+    background: var(--middle-dark-gray);
+  }
+
+  .sections {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .center-information {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 3rem 7.5rem;
+  }
+
+  .title {
+    font-family: "Montserrat-Bold", sans-serif;
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .information {
+    font-family: "Montserrat-Regular", sans-serif;
+    font-size: 1.5rem;
+    margin: 1rem;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 500px;
+    border: none;
+    color: var(--middle-dark-gray);
+    border-bottom: 1px solid var(--middle-dark-gray);
+  }
 }
 </style>

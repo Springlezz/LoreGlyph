@@ -7,9 +7,7 @@
     <div class="right-header">
       <button @click="logout" class="right-header-buttons">Выйти</button>
       <p>|</p>
-      <button @click="goToProfile" class="right-header-buttons">
-        Мой аккаунт
-      </button>
+      <button @click="goToProfile" class="right-header-buttons">Профиль</button>
     </div>
   </header>
   <main>
@@ -128,46 +126,72 @@ const goToProfile = () => {
 
 <style scoped>
 main {
-  padding: 5rem 7.5rem;
+  padding: 1rem 1.6rem;
 }
 
 .big-title {
   font-family: "Montserrat-Bold", sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 .greetings-titles {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
 }
+
 .bold-text {
   font-family: "Montserrat-Bold", sans-serif;
 }
 
+.right-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 2rem;
+}
+
 .description-text {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-family: "Montserrat-Light", sans-serif;
 }
 
 .picture {
   height: auto;
   width: 100%;
-  max-width: 50rem;
-  border-radius: 3rem;
+  max-width: 20rem;
+  border-radius: 1rem;
 }
 
 .welcome {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
   padding-bottom: 2rem;
 }
 
 .description {
   display: flex;
-
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
   padding: 1rem;
-  text-align: left;
+}
+
+.right-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.left-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.8rem;
 }
 
 .edit-language-button {
@@ -176,33 +200,17 @@ main {
   border: none;
   background: var(--main-gradient);
   color: var(--white);
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
   border-radius: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
 }
 
 .edit-language-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   transition: transform 0.4s ease-in-out;
-}
-.right-item {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-}
-.left-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.bottom-section-items {
-  display: flex;
-  flex-direction: row;
-  gap: 4rem 20rem;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
 .delete-language {
@@ -211,7 +219,7 @@ main {
   border: none;
   background-color: var(--white);
   color: var(--red);
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
   border-radius: 2rem;
   cursor: pointer;
   box-shadow:
@@ -219,15 +227,99 @@ main {
     rgba(255, 8, 8, 0.25) 0px 0.125em 0.5em,
     rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
 }
 
 .delete-language:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   transition: transform 0.4s ease-in-out;
 }
 
+.bottom-section-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .item-languages {
-  width: 50rem;
+  width: 100%;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .welcome {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .description {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .right-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .right-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 0 2rem;
+  }
+  .left-item {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .edit-language-button,
+  .delete-language {
+    width: auto;
+    padding: 2rem 1rem;
+  }
+
+  .bottom-section-items {
+    flex-direction: row;
+    gap: 2rem;
+  }
+  main {
+    padding: 5rem 7.5rem;
+  }
+
+  .bottom-section-items {
+    gap: 4rem 20rem;
+  }
+
+  .item-languages {
+    width: 70rem;
+  }
+
+  .edit-language-button:hover,
+  .delete-language:hover {
+    transform: scale(1.1);
+  }
+  .picture {
+    height: auto;
+    width: 100%;
+    max-width: 50rem;
+    border-radius: 3rem;
+  }
+
+  .greetings-titles {
+    font-size: 2.5rem;
+  }
+
+  .item-languages {
+    width: auto;
+    max-width: 50rem;
+  }
 }
 </style>

@@ -351,19 +351,12 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@media screen and (max-width: 768px) {
-  .download-table {
-    font-size: 0.4rem;
-    padding: 0.5rem 0.5rem;
-    width: 30%;
-  }
-
-  .add-word {
-    font-size: 0.4rem;
-    padding: 0.5rem 0.5rem;
-    width: 30%;
-  }
+.add-word {
+  font-size: 0.4rem;
+  padding: 0.5rem 0.5rem;
+  width: 30%;
 }
+
 .input-word-translate-transcription {
   padding: 0.6rem;
   border-radius: 1rem;
@@ -518,13 +511,6 @@ main {
   gap: 2rem;
 }
 
-/* .left-section {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  font-size: 1.5rem;
-  margin-right: 3rem;
-} */
 .left-section {
   display: flex;
   flex-wrap: wrap;
@@ -537,5 +523,188 @@ main {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .input-word-translate-transcription {
+    padding: 0.6rem;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat-Bold", sans-serif;
+    box-shadow:
+      rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+      rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .input-word-translate-transcription:focus {
+    outline: none;
+  }
+
+  .edit-word-button {
+    background: var(--main-gradient);
+    padding: 0.6rem;
+    border-radius: 1rem;
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat-Bold", sans-serif;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .edit-word-button:hover {
+    transform: scale(1.05);
+  }
+
+  .delete-word-button {
+    background: var(--white);
+    padding: 0.6rem;
+    border-radius: 1rem;
+    color: var(--red);
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat-Bold", sans-serif;
+    box-shadow:
+      rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
+      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .delete-word-button:hover {
+    background: var(--red);
+    color: var(--white);
+    transform: scale(1.05);
+    transition: transform 0.4s ease-in-out;
+  }
+
+  main {
+    padding: 2rem 1.5rem;
+  }
+
+  .main-title {
+    color: var(--black);
+    font-family: "Montserrat-Regular", sans-serif;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .buttons-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .download-table {
+    border: none;
+    width: 100%;
+    font-family: "Montserrat-Bold", sans-serif;
+    background: none;
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    border-radius: 2rem;
+    box-shadow:
+      rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
+      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    cursor: pointer;
+    color: var(--gray-blue);
+    transition: all 0.3s ease;
+  }
+
+  .download-table:hover {
+    background: var(--gray-blue);
+    color: var(--white);
+    transform: scale(1.05);
+    transition: transform 0.4s ease-in-out;
+  }
+
+  .add-word {
+    border: none;
+    width: 100%;
+    font-family: "Montserrat-Bold", sans-serif;
+    background: var(--main-gradient);
+    font-size: 1.5rem;
+    padding: 1rem 1rem;
+    border-radius: 2rem;
+    box-shadow:
+      rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
+      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
+      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    cursor: pointer;
+    color: var(--white);
+    transition: all 0.3s ease;
+  }
+
+  .add-word:hover {
+    transform: scale(1.05);
+    transition: transform 0.4s ease-in-out;
+  }
+
+  .filter {
+    width: 100%;
+    margin-bottom: 2rem;
+    border: none;
+    border-bottom: 1px solid var(--middle-dark-gray);
+    font-family: "Montserrat-Regular", sans-serif;
+    font-size: 1.5rem;
+    padding: 10px 10px 10px 5px;
+    color: var(--middle-dark-gray);
+  }
+
+  .filter:focus {
+    outline: none;
+  }
+
+  .transcription {
+    color: var(--gray-blue);
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .bottom-section-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .item-words {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+  }
+
+  .left-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    width: 100%;
+  }
+
+  .right-section {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+  }
 }
 </style>

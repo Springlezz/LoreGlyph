@@ -98,6 +98,22 @@ p {
   margin: 0;
   color: var(--white);
 }
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--white);
+  padding: 15px;
+  border-radius: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: modalAppear 0.3s ease forwards;
+  width: calc(100% - 30px);
+  max-width: 100%;
+}
 
 main {
   margin-top: 2rem;
