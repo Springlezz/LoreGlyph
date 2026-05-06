@@ -6,9 +6,9 @@ namespace LoreGlyph.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; } = null!;
-        public DbSet<Word> Words { get; set; } = null!;
-        public DbSet<Language> Languages { get; set; } = null!;
+        public DbSet<UserEntity> Users { get; set; } = null!;
+        public DbSet<WordEntity> Words { get; set; } = null!;
+        public DbSet<LanguageEntity> Languages { get; set; } = null!;
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
@@ -17,7 +17,7 @@ namespace LoreGlyph.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Language>()
+            modelBuilder.Entity<LanguageEntity>()
                 .HasMany(l => l.Words)
                 .WithOne(w => w.Language)
                 .HasForeignKey(w => w.LanguageId)
@@ -25,5 +25,3 @@ namespace LoreGlyph.Data
         }
     }
 }
-
-//ConnectionStrings: {DefaultConnection: "Server=localhost;Database=mydb;Trusted_Connection=True;}

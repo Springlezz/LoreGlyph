@@ -20,11 +20,11 @@ namespace LoreGlyph.Controllers
 
         [HttpGet("{languageId}")]
         [Authorize]
-        public async Task<IActionResult> GetAllAsync(int languageId)
+        public async Task<IActionResult> GetAllAsync(Guid languageId)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var words = await _wordService.GetAllAsync(userId, languageId);
                 return Ok(words);
             }
@@ -36,11 +36,11 @@ namespace LoreGlyph.Controllers
 
         [HttpPost("{languageId}")]
         [Authorize]
-        public async Task<IActionResult> Create(int languageId, CreateWordDto dto)
+        public async Task<IActionResult> Create(Guid languageId, CreateWordDto dto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 var word = await _wordService.CreateAsync(dto, languageId, userId);
                 return Ok(word);
@@ -53,11 +53,11 @@ namespace LoreGlyph.Controllers
 
         [HttpPut("{wordId}")]
         [Authorize]
-        public async Task<IActionResult> UpdateAsync(int wordId, UpdateWordDto dto)
+        public async Task<IActionResult> UpdateAsync(Guid wordId, UpdateWordDto dto)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var result = await _wordService.UpdateAsync(wordId, dto);
 
                 if (!result)
@@ -75,11 +75,11 @@ namespace LoreGlyph.Controllers
 
         [HttpDelete("{wordId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteAsync(int wordId)
+        public async Task<IActionResult> DeleteAsync(Guid wordId)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var result = await _wordService.DeleteAsync(wordId, userId);
 
                 if (!result)
@@ -96,11 +96,11 @@ namespace LoreGlyph.Controllers
 
         [HttpPut("update-word-order")]
         [Authorize]
-        public async Task<IActionResult> UpdateOrderAsync([FromBody] IList<UpdateWordOrderDto> dto, int languageId)
+        public async Task<IActionResult> UpdateOrderAsync([FromBody] IList<UpdateWordOrderDto> dto, Guid languageId)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 if (dto == null)
                 {
@@ -123,4 +123,3 @@ namespace LoreGlyph.Controllers
         }
     }
 }
-//Task<bool> UpdateOrderAsync(IList<UpdateWordOrderDto> dto, int userId, int languageId);

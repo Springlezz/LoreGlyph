@@ -23,7 +23,7 @@ namespace LoreGlyph.Controllers
         {        
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var languages = await _languageService.GetAllAsync(userId);
                 return Ok(languages);
             }
@@ -34,12 +34,12 @@ namespace LoreGlyph.Controllers
 
         [HttpPut("{languageId}")]
         [Authorize]
-        public async Task<IActionResult> UpdateAsync(int languageId, UpdateLanguageDto dto)
+        public async Task<IActionResult> UpdateAsync(Guid languageId, UpdateLanguageDto dto)
         {  
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var result = await _languageService.UpdateAsync(languageId, dto);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var result = await _languageService.UpdateAsync(languageId, dto, userId);
 
                 if (!result)
                 {
@@ -59,7 +59,7 @@ namespace LoreGlyph.Controllers
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var languages = await _languageService.CreateAsync(dto, userId);
                 return Ok("Создано");
             }
@@ -71,11 +71,11 @@ namespace LoreGlyph.Controllers
 
         [HttpDelete("{languageId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteAsync(int languageId)
+        public async Task<IActionResult> DeleteAsync(Guid languageId)
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var result = await _languageService.DeleteAsync(languageId, userId);
 
                 if (!result)

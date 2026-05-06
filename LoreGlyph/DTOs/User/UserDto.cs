@@ -12,5 +12,9 @@
         string Login,
         DateTime CreatedBy
     );
-
+    
+    public record UpdateAvatarDto
+    (
+        string AvatarPath
+    );
 }

@@ -9,7 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Text;
-
+using LoreGlyph.Repository;
+using LoreGlyph.Repository.Interfaces;
+using IAuthService = LoreGlyph.Services.Interfaces.IAuthService;
 
 
 namespace LoreGlyph
@@ -20,13 +22,9 @@ namespace LoreGlyph
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            //builder.Services.AddOpenApi();
+            
             builder.Services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -85,6 +83,11 @@ namespace LoreGlyph
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ILanguageService, LanguageService>();
             builder.Services.AddScoped<IWordService, WordService>();
+            
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+            builder.Services.AddScoped<IWordRepository, WordRepository>();
 
             builder.Services.AddCors(options =>
             {

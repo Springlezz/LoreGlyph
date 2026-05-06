@@ -1,6 +1,7 @@
 ﻿using LoreGlyph.Data;
 using LoreGlyph.DTOs.Language;
 using LoreGlyph.Models;
+using LoreGlyph.Repository.Interfaces;
 using LoreGlyph.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,29 +9,28 @@ namespace LoreGlyph.Services
 {
     public class LanguageService : ILanguageService
     {
-        private readonly AppDbContext _context;
-        public LanguageService(AppDbContext context)
+        private readonly ILanguageRepository _languageRepository;
+        public LanguageService(ILanguageRepository languageRepository)
         {
-            _context = context;
+            _languageRepository = languageRepository;
         }
 
-        public async Task<IEnumerable<LanguageDto>> GetAllAsync(int userId)
+        public async Task<IEnumerable<LanguageDto>> GetAllAsync(Guid userId)
         {
-            return await _context.Languages
-                .Where(l => l.UserId == userId)
-                .Select(language => new LanguageDto(
-                    language.LanguageId,
-                    language.Name,
-                    language.Description
-                    ))
-                .ToListAsync();
+            var languages = await _languageRepository.GetAllByUserIdAsync(userId);
+
+            return languages.Select(language => new LanguageDto(
+                language.Id,
+                language.Name,
+                language.Description
+            ));
         }
 
-        public async Task<bool> UpdateAsync(int languageId, UpdateLanguageDto dto)
+        public async Task<bool> UpdateAsync(Guid languageId, UpdateLanguageDto dto, Guid userId)
         {
-            var language = await _context.Languages.FindAsync(languageId);
+            var language = await _languageRepository.GetByIdAsync(languageId);
 
-            if (language == null)
+            if (language == null || language.UserId != userId)
             {
                 return false;
             }
@@ -38,52 +38,36 @@ namespace LoreGlyph.Services
             language.Name = dto.Name;
             language.Description = dto.Description;
 
-            await _context.SaveChangesAsync();
+            await _languageRepository.UpdateAsync(language);
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int languageId, int userId)
+        public async Task<bool> DeleteAsync(Guid languageId, Guid userId)
         {
-            var language = await _context.Languages
-                .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.UserId == userId);
-            if (language == null)
+            var language = await _languageRepository.GetByIdAsync(languageId);
+            
+            if (language == null || language.UserId != userId)
             {
                 return false;
             }
-
-            _context.Languages.Remove(language);
-            await _context.SaveChangesAsync();
+            
+            await _languageRepository.DeleteAsync(language);
             return true;
         }
-
-        //public async Task<LanguageDto> GetByIdAsync(int languageId)
-        //{
-        //    var language = await _context.Languages
-        //        .FirstOrDefaultAsync(l => l.LanguageId == languageId && l.UserId == userId);
-
-        //    if (language == null) return null;
-
-        //    return new LanguageDto(
-        //        language.LanguageId,
-        //        language.Name,
-        //        language.Description
-        //    );
-        //}
-
-        public async Task<LanguageDto> CreateAsync(CreateLanguageDto dto, int userId)
+        
+        public async Task<LanguageDto> CreateAsync(CreateLanguageDto dto, Guid userId)
         {
-            var language = new Language
+            var language = new LanguageEntity
             {
                 Name = dto.Name,
                 Description = dto.Description,
                 UserId = userId
             };
 
-            _context.Languages.Add(language);
-            await _context.SaveChangesAsync();
+            await _languageRepository.AddAsync(language);
 
             return new LanguageDto(
-                language.LanguageId,
+                language.Id,
                 language.Name,
                 language.Description
             );

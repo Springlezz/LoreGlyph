@@ -9,31 +9,31 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LoreGlyph.Repository.Interfaces;
 
 namespace LoreGlyph.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly AppDbContext _context;
+        private readonly IAuthRepository _authRepository;
         private readonly IConfiguration _config;
 
-        public AuthService(AppDbContext context, IConfiguration config)
+        public AuthService(IAuthRepository authRepository, IConfiguration config)
         {
-            _context = context;
+            _authRepository = authRepository;
             _config = config;
         }
 
         public async Task<UserDto?> RegisterAsync(RegisterDto dto)
         {
-            var exists = await _context.Users
-                .AnyAsync(u => u.Login == dto.Login);
+            var exists = await _authRepository.LoginExistsAsync(dto.Login);
 
             if (exists)
             {
                 return null;
             }
 
-            var user = new User
+            var user = new UserEntity
             {
                 UserName = dto.UserName,
                 Login = dto.Login,
@@ -42,8 +42,7 @@ namespace LoreGlyph.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _authRepository.AddAsync(user);
 
             return new UserDto(
                 user.UserName,
@@ -53,8 +52,7 @@ namespace LoreGlyph.Services
 
         public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Login == dto.Login);
+            var user = await _authRepository.GetByLoginAsync(dto.Login);
 
             if (user == null)
             {
@@ -68,7 +66,7 @@ namespace LoreGlyph.Services
 
             var claims = new[ ]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Login)
             };
 
@@ -97,14 +95,12 @@ namespace LoreGlyph.Services
 
         public async Task<bool> ResetPasswordAsync(ResetPasswordDto dto)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Login == dto.Login);
+            var user = await _authRepository.GetByLoginAsync(dto.Login);
 
             if (user == null)
             {
                 return false;
             }
-
 
             if (!BCrypt.Net.BCrypt.Verify(dto.OldPassword, user.PasswordHash))
             {
@@ -113,18 +109,8 @@ namespace LoreGlyph.Services
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
 
-            await _context.SaveChangesAsync();
+            await _authRepository.UpdateAsync(user);
             return true;
         }
     }
 }
-
-//GetMe()
-//public async Task<UserDto?> GetByIdAsync(int userId)
-//{
-//    var user = await _context.Users.FindAsync(userId);
-
-//    if (user == null) return null;
-
-//    return new UserDto(user.UserName, user.Login);
-//}

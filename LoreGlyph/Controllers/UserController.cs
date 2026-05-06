@@ -27,12 +27,13 @@ namespace LoreGlyph.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
                 if (string.IsNullOrEmpty(userIdClaim))
                 {
                     return BadRequest("UserId не найден в токене");
                 }
                    
-                var userId = int.Parse(userIdClaim);
+                var userId = Guid.Parse(userIdClaim);
 
                 var result = await _userService.GetMe(userId);
                 return Ok(result);
@@ -60,7 +61,7 @@ namespace LoreGlyph.Controllers
 
         [HttpDelete("{userId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteAsync(int userId)
+        public async Task<IActionResult> DeleteAsync(Guid userId)
         {
             try
             {

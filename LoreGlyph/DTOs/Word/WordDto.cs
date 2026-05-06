@@ -2,7 +2,7 @@
 {
     public record WordDto
     (
-        int WordId,
+        Guid WordId,
         string Text,
         string Transcription,
         string Translation,
@@ -11,7 +11,7 @@
 
     public record CreateWordDto
     (
-        int WordId,
+        Guid WordId,
         string Text,
         string Transcription,
         string Translation,
@@ -20,7 +20,7 @@
 
     public record UpdateWordDto
     (
-        int WordId,
+        Guid WordId,
         string Text,
         string Transcription,
         string Translation,
@@ -28,7 +28,7 @@
     );
 
     public record UpdateWordOrderDto(
-        int WordId,
+        Guid WordId,
         int Order
     );
 }

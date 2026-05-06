@@ -3,45 +3,48 @@ using LoreGlyph.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using LoreGlyph.Models;
 using LoreGlyph.Data;
+using LoreGlyph.Repository.Interfaces;
 
 namespace LoreGlyph.Services
 {
     public class WordService : IWordService
     {
-        private readonly AppDbContext _context;
+        private readonly IWordRepository _wordRepository;
+        private readonly ILanguageRepository _languageRepository;
 
-        public WordService(AppDbContext context)
+        public WordService(IWordRepository wordRepository, ILanguageRepository languageRepository)
         {
-            _context = context;
+            _wordRepository = wordRepository;
+            _languageRepository = languageRepository;
         }
 
-        public async Task<IEnumerable<WordDto>> GetAllAsync(int userId, int languageId)
+        public async Task<IEnumerable<WordDto>> GetAllAsync(Guid userId, Guid languageId)
         {
-            return await _context.Words
-                .Where (word => word.Language.UserId == userId && word.LanguageId == languageId)
-                .OrderBy (word => word.Order)
-                .Select(word => new WordDto(
-                                      word.WordId,
-                                      word.Text,
-                                      word.Transcription,
-                                      word.Translation,
-                                      word.Order
-                                      ))
-                .ToListAsync();
+            var language = await _languageRepository.GetByIdAsync(languageId);
+
+            if (language == null || language.UserId != userId)
+            {
+                return Enumerable.Empty<WordDto>();
+            }
+            
+            var words = await _wordRepository.GetAllByLanguageIdAsync(languageId);
+
+            return words
+                .OrderBy(w => w.Order)
+                .Select(w => new WordDto(w.Id, w.Text, w.Transcription, w.Translation, w.Order));
         }
 
         
-        public async Task<WordDto> CreateAsync(CreateWordDto dto, int languageId, int userId)
+        public async Task<WordDto> CreateAsync(CreateWordDto dto, Guid languageId, Guid userId)
         {
-            var language = await _context.Languages
-                .FirstOrDefaultAsync(languages => languages.LanguageId == languageId && languages.UserId == userId);
+            var language = await _languageRepository.GetByIdAsync(languageId);
 
             if (language == null)
             {
                 throw new Exception("Язык не найден");
             }
 
-            var word = new Word
+            var word = new WordEntity
             {
                 LanguageId = languageId,
                 Text = dto.Text,
@@ -49,12 +52,11 @@ namespace LoreGlyph.Services
                 Translation = dto.Translation,
                 Order = dto.Order
             };
-
-            _context.Words.Add(word);
-            await _context.SaveChangesAsync();
+            
+            await _wordRepository.AddAsync(word);
 
             return new WordDto(
-                    word.WordId,
+                    word.Id,
                     word.Text,
                     word.Transcription,
                     word.Translation,
@@ -62,25 +64,38 @@ namespace LoreGlyph.Services
                 );
         }
 
-        public async Task<bool> DeleteAsync(int wordId, int userId)
+        public async Task<bool> DeleteAsync(Guid wordId, Guid userId)
         {
-            var word = await _context.Words
-                .FirstOrDefaultAsync(w => w.WordId == wordId && w.Language.UserId == userId);
+            var word = await _wordRepository.GetByIdAsync(wordId);
+            
             if (word == null)
             {
                 return false;
             }
+            
+            var language = await _languageRepository.GetByIdAsync(word.LanguageId);
 
-            _context.Words.Remove(word);
-            await _context.SaveChangesAsync();
+            if (language == null || language.UserId != userId)
+            {
+                return false;
+            }
+            
+            await  _wordRepository.DeleteAsync(word);
             return true;
         }
 
-        public async Task<bool> UpdateAsync(int wordId, UpdateWordDto dto)
+        public async Task<bool> UpdateAsync(Guid wordId, UpdateWordDto dto)
         {
-            var word = await _context.Words.FindAsync(wordId);
+            var word = await _wordRepository.GetByIdAsync(wordId);
 
             if (word == null)
+            {
+                return false;
+            }
+            
+            var language = await _languageRepository.GetByIdAsync(word.LanguageId);
+
+            if (language == null)
             {
                 return false;
             }
@@ -89,15 +104,20 @@ namespace LoreGlyph.Services
             word.Transcription = dto.Transcription;
             word.Translation = dto.Translation;
 
-            await _context.SaveChangesAsync();
+            await _wordRepository.UpdateAsync(word);
             return true;
         }
 
-        public async Task<bool> UpdateOrderAsync(IList<UpdateWordOrderDto> dto, int languageId, int userId)
+        public async Task<bool> UpdateOrderAsync(IList<UpdateWordOrderDto> dto, Guid languageId, Guid userId)
         {
-            var words = await _context.Words
-                .Where(word => word.LanguageId == languageId && word.Language.UserId == userId)
-                .ToListAsync();
+            var language = await _languageRepository.GetByIdAsync(languageId);
+            
+            if (language == null || language.UserId != userId)
+            {
+                return false;
+            }
+            
+            var words = await _wordRepository.GetAllByLanguageIdAsync(languageId);
             
             if (words.Count == 0)
             {
@@ -106,13 +126,18 @@ namespace LoreGlyph.Services
 
             foreach (var item in dto)
             {
-                var word = words.FirstOrDefault(w => w.WordId == item.WordId);
+                var word = words.FirstOrDefault(w => w.Id == item.WordId);
                 if (word != null)
                 {
                     word.Order = item.Order;
                 }
             }
-            await _context.SaveChangesAsync();
+            
+            foreach (var word in words)
+            {
+                await _wordRepository.UpdateAsync(word);
+            }
+            
             return true;
         }
     }

@@ -3,56 +3,55 @@ using LoreGlyph.Data;
 using LoreGlyph.DTOs.Auth;
 using LoreGlyph.DTOs.User;
 using LoreGlyph.Services.Interfaces;
-using System.Diagnostics;
+using LoreGlyph.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using LoreGlyph.Repository;
 
 namespace LoreGlyph.Services
 {
     public class UserService : IUserService
     {
-        private readonly AppDbContext _context;
-        public UserService(AppDbContext context)
+        private readonly IUserRepository _userRepository;
+        public UserService(IUserRepository userRepository)
         {
-            _context = context;
+            _userRepository = userRepository;
         }
 
-        public async Task<AboutUser?> GetMe(int userId)
+        public async Task<AboutUser?> GetMe(Guid userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+                return null;
 
             return new AboutUser(
                 user.UserName,
                 user.Login,
                 user.CreatedAt
-                );
+            );
         }
 
-        public async Task<bool> DeleteAsync(int userId)
+        public async Task<bool> DeleteAsync(Guid userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
 
             if (user == null)
             {
                 return false;
             }
-               
-
-            _context.Users.Remove(user);
-
-            await _context.SaveChangesAsync();
+            
+            await _userRepository.DeleteAsync(user);
             return true;
         }
 
         public async Task<bool> ResetForgottenPasswordAsync(ResetForgottenPasswordDto dto)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Login == dto.Login);
+            var user = await _userRepository.GetByLoginAsync(dto.Login);
 
             if (user == null)
             {
                 return false;
             }
-
 
             if (!BCrypt.Net.BCrypt.Verify(dto.SecretWord, user.SecretWordHash))
             {
@@ -61,7 +60,7 @@ namespace LoreGlyph.Services
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
 
-            await _context.SaveChangesAsync();
+            await _userRepository.UpdateAsync(user);
             return true;
         }
     }
