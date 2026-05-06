@@ -1,11 +1,7 @@
-﻿using BCrypt.Net;
-using LoreGlyph.Data;
-using LoreGlyph.DTOs.Auth;
+﻿using LoreGlyph.DTOs.Auth;
 using LoreGlyph.DTOs.User;
 using LoreGlyph.Services.Interfaces;
 using LoreGlyph.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using LoreGlyph.Repository;
 
 namespace LoreGlyph.Services
 {
@@ -25,7 +21,7 @@ namespace LoreGlyph.Services
                 return null;
 
             return new AboutUser(
-                user.UserName,
+                user.Name,
                 user.Login,
                 user.CreatedAt
             );

@@ -1,4 +1,4 @@
-using LoreGlyph.Models;
+using LoreGlyph.Repository.Entities;
 
 namespace LoreGlyph.Repository.Interfaces;
 

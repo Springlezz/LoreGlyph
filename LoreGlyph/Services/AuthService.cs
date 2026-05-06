@@ -1,15 +1,12 @@
-﻿using LoreGlyph.Data;
-using LoreGlyph.DTOs.Auth;
+﻿using LoreGlyph.DTOs.Auth;
 using LoreGlyph.DTOs.User;
-using LoreGlyph.Models;
 using LoreGlyph.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LoreGlyph.Repository.Interfaces;
+using LoreGlyph.Repository.Entities;
 
 namespace LoreGlyph.Services
 {
@@ -35,7 +32,7 @@ namespace LoreGlyph.Services
 
             var user = new UserEntity
             {
-                UserName = dto.UserName,
+                Name = dto.UserName,
                 Login = dto.Login,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 SecretWordHash = BCrypt.Net.BCrypt.HashPassword(dto.SecretWord),
@@ -45,7 +42,7 @@ namespace LoreGlyph.Services
             await _authRepository.AddAsync(user);
 
             return new UserDto(
-                user.UserName,
+                user.Name,
                 user.Login
                 ); 
         }
@@ -88,7 +85,7 @@ namespace LoreGlyph.Services
 
             return new AuthResponseDto(
                 tokenString,
-                user.UserName,
+                user.Name,
                 user.Login
             );
         }

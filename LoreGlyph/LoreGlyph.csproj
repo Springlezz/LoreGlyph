@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Frontend\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -1,15 +1,20 @@
-﻿using LoreGlyph.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LoreGlyph.Models
+namespace LoreGlyph.Repository.Entities
 {
     public class WordEntity : BaseEntity
     {
+        [Column("text")]
         public string Text { get; set; }
+        [Column("translation")]
         public string Translation { get; set; }
+        [Column("transcription")]
         public string Transcription { get; set; }
+        [Column("order")]
         public int Order { get; set; }
+        [Column("language_id")]
         public Guid LanguageId { get; set; }
-        public LanguageEntity? Language { get; set; }
+        public virtual LanguageEntity? Language { get; set; }
         //public string Symbol {get;set;} in next update
     }
 }

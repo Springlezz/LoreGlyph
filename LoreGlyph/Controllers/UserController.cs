@@ -1,7 +1,4 @@
 ﻿using LoreGlyph.DTOs.Auth;
-using LoreGlyph.DTOs.User;
-using LoreGlyph.Models;
-using LoreGlyph.Services;
 using LoreGlyph.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

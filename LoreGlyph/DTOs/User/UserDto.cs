@@ -10,7 +10,7 @@
     (
         string UserName,
         string Login,
-        DateTime CreatedBy
+        DateTimeOffset CreatedBy
     );
     
     public record UpdateAvatarDto

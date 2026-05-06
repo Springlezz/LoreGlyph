@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace LoreGlyph.Data
+namespace LoreGlyph.Repository
 {
     public class AppContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {

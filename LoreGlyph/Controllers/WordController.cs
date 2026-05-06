@@ -1,6 +1,4 @@
-﻿using LoreGlyph.DTOs.Language;
-using LoreGlyph.DTOs.Word;
-using LoreGlyph.Services;
+﻿using LoreGlyph.DTOs.Word;
 using LoreGlyph.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

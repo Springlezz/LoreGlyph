@@ -1,7 +1,4 @@
-using LoreGlyph.DTOs.Auth;
-using LoreGlyph.DTOs.User;
-using LoreGlyph.Data.Entities;
-using LoreGlyph.Models;
+using LoreGlyph.Repository.Entities;
 
 namespace LoreGlyph.Repository.Interfaces;
 

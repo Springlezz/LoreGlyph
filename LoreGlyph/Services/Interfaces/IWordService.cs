@@ -1,5 +1,4 @@
-﻿using LoreGlyph.DTOs.User;
-using LoreGlyph.DTOs.Word;
+﻿using LoreGlyph.DTOs.Word;
 
 namespace LoreGlyph.Services.Interfaces
 {

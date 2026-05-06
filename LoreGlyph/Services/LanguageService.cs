@@ -1,9 +1,7 @@
-﻿using LoreGlyph.Data;
-using LoreGlyph.DTOs.Language;
-using LoreGlyph.Models;
+﻿using LoreGlyph.DTOs.Language;
+using LoreGlyph.Repository.Entities;
 using LoreGlyph.Repository.Interfaces;
 using LoreGlyph.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace LoreGlyph.Services
 {

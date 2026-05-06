@@ -1,7 +1,5 @@
-using LoreGlyph.Data.Entities;
-using LoreGlyph.Data;
-using LoreGlyph.Models;
 using Microsoft.EntityFrameworkCore;
+using LoreGlyph.Repository.Entities;
 
 
 namespace LoreGlyph.Repository.Interfaces;
