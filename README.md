@@ -15,7 +15,7 @@ LoreGlyph - это веб-интерфейс на ASP.Net и Vue.js с авто�
 ## Что умеет приложение?
 Аутентификация реализована через JWT: пользователь логинится, и ASP.NET backend возвращает токен. Frontend на Vue.js сохраняет его (localstorage) и отправляет в заголовке Authorization: Bearer. Сервер проверяет токен и даёт доступ к защищённым эндпоинтам. Если токен потух, то пользователь автоматически будет переадресован на главную страницу /home (все страницы защищены от анонимов и в случае потухшего токена или его отсутствия, переадресация на home), где ему будет предложено - зарегистрироваться, сбросить пароль с помощью логина и кодового слова (которое пользователь создает себе сам) или залогиниться.
 
-<img src="LoreGlyph/Frontend/screenshots/login.gif" width="600"/>
+<img src="LoreGlyph/Frontend/screenshots/main.gif" width="600"/>
 
 У каждого пользователя свои языки, у каждого языка пользователь создает слова. 
 
@@ -23,18 +23,18 @@ LoreGlyph - это веб-интерфейс на ASP.Net и Vue.js с авто�
 
 Пользователь может создавать слова, а также экспортировать таблицу слов.
 
-<img src="LoreGlyph/Frontend/screenshots/download-table.gif" width="600"/>
+<img src="LoreGlyph/Frontend/screenshots/words.gif" width="600"/>
 
 ## Интерфейс
 * Главная страница
-<img src="LoreGlyph/Frontend/screenshots/main.png" width="600"/>
+<img src="LoreGlyph/Frontend/screenshots/main-photo.png" width="600"/>
 
 * Меню языков
-<img src="LoreGlyph/Frontend/screenshots/languages.png" width="600"/>
+<img src="LoreGlyph/Frontend/screenshots/languages-photo.png" width="600"/>
 
 * Слова
 
-<img src="LoreGlyph/Frontend/screenshots/words.png" width="600"/>
+<img src="LoreGlyph/Frontend/screenshots/words-photo.png" width="600"/>
 
 * Аккаунт
 
@@ -52,7 +52,7 @@ LoreGlyph - это веб-интерфейс на ASP.Net и Vue.js с авто�
 > * VUE_APP_API_URL=http://loreglyph:8080/api
 > * Тогда приложение будет доступно на 8000 порту
 
-Устаревшее:
+Для разработки:
 1. Установите PostgreSQL, Node.Js, .NET SDK 10, (опционально) Vue CLI или Vite
 2. Настроить секреты:
 * dotnet user-secrets init
