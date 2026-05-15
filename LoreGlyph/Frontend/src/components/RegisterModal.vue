@@ -1,34 +1,44 @@
 <script setup>
-import { ref } from 'vue'
-import { authService } from '@/services/authService'
+import { ref } from "vue";
+import { authService } from "@/services/authService";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
-const userName = ref('')
-const login = ref('')
-const password = ref('')
-const secretWord = ref('')
+const userName = ref("");
+const login = ref("");
+const password = ref("");
+const secretWord = ref("");
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(["close"]);
 
 const register = async () => {
   try {
+    if (
+      !userName.value ||
+      !login.value ||
+      !password.value ||
+      !secretWord.value
+    ) {
+      toast.error("Заполните все поля");
+      return;
+    }
     await authService.register({
       userName: userName.value,
       login: login.value,
       password: password.value,
-      secretWord: secretWord.value
-    })
-    if (!userName.value || !login.value || !password.value || !secretWord.value) {
-      toast.error('Заполните все поля')
-      return
-    }
-    toast.success('Регистрация прошла успешно')
-    emit('close')
+      secretWord: secretWord.value,
+    });
+
+    toast.success("Регистрация прошла успешно");
+    emit("close");
   } catch (e) {
-    toast.error(e.response?.data || 'Ошибка регистрации')
+    if (userName.value && login.value && password.value && secretWord.value) {
+      toast.error("Пользователь с таким логином уже существует");
+      return;
+    }
+    toast.error(e.response?.data || "Ошибка регистрации");
   }
-}
+};
 </script>
 
 <template>

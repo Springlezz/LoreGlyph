@@ -5,50 +5,65 @@
       class="left-header"
       title="Вернуться на главную страницу"
     >
-      <img class="logo" src="../assets/cube_black_logo.svg" alt="logo" />
+      <img class="logo" src="../assets/cube_white_logo.svg" alt="logo" />
       <h1>LoreGlyph</h1>
     </div>
     <div class="right-header">
       <button @click="$router.push('/languages')" class="right-header-buttons">
         Вернуться
       </button>
-      <p>|</p>
       <button @click="logout" class="right-header-buttons">Выйти</button>
     </div>
   </header>
   <main>
-    <h1 class="main-title">Язык</h1>
+    <span class="panorama"></span>
+    <h1 class="main-title">Редактирование языка</h1>
+
     <div class="buttons-menu">
       <button @click="downloadTable" class="download-table">
         Скачать таблицу
       </button>
       <button @click="addWord" class="add-word">Добавить слово</button>
     </div>
-    <div id="search">
+    <div class="search" id="search">
       <input
         v-model="filterQuery"
         class="filter"
-        type="text"
+        type="search"
         placeholder="Поиск по словам..."
       />
+      <img class="loupe" src="../assets/loupe-search.svg" alt="search" />
+    </div>
+    <span class="line"></span>
 
-      <div class="bottom-section-items" ref="dragContainer">
-        <div
-          v-for="(word, index) in filteredWords"
-          :key="word.wordId"
-          :data-id="word.wordItem"
-        >
-          <div class="item-words">
-            <div class="left-section">
-              <img class="picture" src="../assets/burger.svg" />
+    <h2 class="nothing-warning" v-if="words.length === 0 && !filterQuery">
+      Упс. Тут ничего нет :(<br />Нажмите "Добавить слово", чтобы создать слово
+    </h2>
+    <h2
+      class="nothing-warning"
+      v-if="filteredWords.length === 0 && filterQuery"
+    >
+      По запросу "{{ filterQuery }}" ничего не найдено
+    </h2>
 
-              <template v-if="editingId !== word.wordId">
-                <h3>{{ word.text }}</h3>
-                <h3 class="transcription">{{ word.transcription }}</h3>
-                <h3>{{ word.translation }}</h3>
-              </template>
+    <div class="bottom-section-items" ref="dragContainer">
+      <div
+        v-for="(word, index) in filteredWords"
+        :key="word.wordId"
+        :data-id="word.wordItem"
+      >
+        <div class="item-words">
+          <div class="left-section">
+            <img class="burger" src="../assets/burger.svg" />
 
-              <template v-else>
+            <template class="created-word" v-if="editingId !== word.wordId">
+              <h3>{{ word.text }}</h3>
+              <h3 class="transcription">[{{ word.transcription }}]</h3>
+              <h3>{{ word.translation }}</h3>
+            </template>
+
+            <template v-else>
+              <div class="inputs">
                 <input
                   class="input-word-translate-transcription"
                   v-model="editForm.text"
@@ -64,21 +79,18 @@
                   v-model="editForm.translation"
                   placeholder="Перевод"
                 />
-              </template>
-            </div>
+              </div>
+            </template>
+          </div>
 
-            <div class="right-section">
-              <button class="edit-word-button" @click="toggleEdit(word)">
-                {{ editingId === word.wordId ? "Сохранить" : "Редактировать" }}
-              </button>
+          <div class="right-section">
+            <button class="edit-word-button" @click="toggleEdit(word)">
+              {{ editingId === word.wordId ? "Сохранить" : "Редактировать" }}
+            </button>
 
-              <button
-                class="delete-word-button"
-                @click="deleteWord(word.wordId)"
-              >
-                Удалить
-              </button>
-            </div>
+            <button class="delete-word-button" @click="deleteWord(word.wordId)">
+              Удалить
+            </button>
           </div>
         </div>
       </div>
@@ -92,6 +104,10 @@ import { useRoute } from "vue-router";
 import * as XLSX from "xlsx";
 import Sortable from "sortablejs";
 import { wordService } from "@/services/wordService";
+import FooterComponent from "@/components/FooterComponent.vue";
+
+import { languageService } from "@/services/languageService";
+
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -179,6 +195,7 @@ const addWord = async () => {
       languageId: languageId.value,
     };
     const res = await wordService.create(languageId.value, newWord);
+
     words.value.push(res.data);
     saveToLocalStorage();
     startEdit(res.data);
@@ -212,8 +229,18 @@ const startEdit = (word) => {
 const saveEdit = async (wordId) => {
   try {
     const word = words.value.find((w) => w.wordId === wordId);
-    if (!word) return;
+    if (!word) {
+      return;
+    }
 
+    if (
+      !editForm.value.text ||
+      !editForm.value.transcription ||
+      !editForm.value.translation
+    ) {
+      toast.error("Заполните все поля");
+      return;
+    }
     await wordService.update(wordId, {
       text: editForm.value.text,
       transcription: editForm.value.transcription,
@@ -289,8 +316,10 @@ const deleteWord = async (wordId) => {
 
 onMounted(() => {
   languageId.value = route.params.id;
-  if (languageId.value && typeof languageId.value === "string") {
-    languageId.value = parseInt(languageId.value);
+
+  if (!languageId.value) {
+    toast.error("ID языка не указан");
+    return;
   }
 
   loadWords();
@@ -321,12 +350,10 @@ onMounted(() => {
     });
   }
 });
-
 const downloadTable = () => {
   const sortedWords = [...words.value].sort((a, b) => a.order - b.order);
   const exportData = sortedWords.map((word, index) => ({
     "№": index + 1,
-    "#": word.order,
     Слово: word.text,
     Транскрипция: word.transcription,
     Перевод: word.translation,
@@ -351,360 +378,217 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.add-word {
-  font-size: 0.4rem;
-  padding: 0.5rem 0.5rem;
-  width: 30%;
+.main-title {
+  padding-top: 1rem;
 }
 
-.input-word-translate-transcription {
-  padding: 0.6rem;
+.panorama {
+  margin-top: 6rem;
+}
+
+.burger {
+  width: 1.5rem;
+}
+
+.item-words {
+  gap: 1rem;
+  padding: 1rem;
   border-radius: 1rem;
-  border: none;
-  cursor: pointer;
-  font-family: "Montserrat-Bold", sans-serif;
-  box-shadow:
-    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-  transition: all 0.3s ease;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+  margin-top: 2rem;
 }
 
-.input-word-translate-transcription:focus {
-  outline: none;
+.left-section {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  font-family: "Montserrat-Light", sans-serif;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.left-section h3,
+.left-section .transcription {
+  margin: 0;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
+.left-section .transcription {
+  color: var(--middle-gray);
+  font-style: italic;
 }
 
 .edit-word-button {
-  background: var(--main-gradient);
-  padding: 0.6rem;
-  border-radius: 1rem;
+  padding: 0.3rem;
+  border-radius: 0.5rem;
   color: var(--white);
+  background: var(--black-gray);
   border: none;
   cursor: pointer;
-  font-family: "Montserrat-Bold", sans-serif;
   transition: all 0.3s ease;
+  font-family: "Montserrat-Bold", sans-serif;
 }
 
 .edit-word-button:hover {
-  transform: scale(1.1);
+  background: var(--white);
+  color: var(--black-gray);
+  box-shadow:
+    rgba(19, 17, 17, 0.74) 0px 1px 3px 0px,
+    rgba(15, 14, 14, 0.911) 0px 0px 0px 1px;
+  transform: scale(1.05);
+}
+
+.right-section {
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .delete-word-button {
-  background: var(--white);
-  padding: 0.6rem;
-  border-radius: 1rem;
+  padding: 0.3rem;
+  border-radius: 0.5rem;
   color: var(--red);
+  background: var(--white);
+  box-shadow:
+    rgba(185, 33, 33, 0.74) 0px 1px 3px 0px,
+    rgba(160, 55, 55, 0.911) 0px 0px 0px 1px;
   border: none;
   cursor: pointer;
   font-family: "Montserrat-Bold", sans-serif;
-  box-shadow:
-    rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
   transition: all 0.3s ease;
 }
 
 .delete-word-button:hover {
   background: var(--red);
   color: var(--white);
-  transform: scale(1.1);
-  transition: transform 0.4s ease-in-out;
+  transform: scale(1.05);
 }
 
-main {
-  padding: 5rem 7.5rem;
-}
-
-.main-title {
-  color: var(--black);
-  font-family: "Montserrat-Regular", sans-serif;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-}
-
-.buttons-menu {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-}
-
-.transcription {
-  color: var(--gray-blue);
-
-  white-space: nowrap;
-}
-
-.download-table {
-  border: none;
-  width: 20%;
-  font-family: "Montserrat-Bold", sans-serif;
-  background: none;
-  font-size: 1.5rem;
-  padding: 1rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
-  color: var(--gray-blue);
-  transition: all 0.3s ease;
-}
-
-.download-table:hover {
-  background: var(--gray-blue);
-  color: var(--white);
-  transform: scale(1.1);
-  transition: transform 0.4s ease-in-out;
-}
-
-.add-word {
-  border: none;
-  width: 20%;
-  font-family: "Montserrat-Bold", sans-serif;
-  background: var(--main-gradient);
-  font-size: 1.5rem;
-  padding: 1rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
-  color: var(--white);
-  transition: all 0.3s ease;
-}
-
-.add-word:hover {
-  transform: scale(1.1);
-  transition: transform 0.4s ease-in-out;
-}
-
-.filter {
-  width: 40%;
-  margin-bottom: 2rem;
-  border: none;
-  border-bottom: 1px solid var(--middle-dark-gray);
-  font-family: "Montserrat-Regular", sans-serif;
-  font-size: 1.5rem;
-  padding: 10px 10px 10px 5px;
-  color: var(--middle-dark-gray);
-}
-
-.filter:focus {
-  outline: none;
-}
-
-.bottom-section-items {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(300px, 1fr));
-  gap: 1rem;
-  width: auto;
-  max-width: 90%;
-  margin: 0 auto;
-}
-
-.item-words {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  gap: 2rem;
-}
-
-.left-section {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1.2rem;
-  margin-right: 1rem;
-}
-.right-section {
+.inputs {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-@media (max-width: 768px) {
-  .input-word-translate-transcription {
-    padding: 0.6rem;
-    border-radius: 1rem;
-    border: none;
-    cursor: pointer;
-    font-family: "Montserrat-Bold", sans-serif;
-    box-shadow:
-      rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-      rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-    transition: all 0.3s ease;
-    width: 100%;
-    max-width: 100%;
-  }
+.add-word {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  color: var(--white);
+  background: var(--black-gray);
+  border: none;
+  cursor: pointer;
+  font-family: "Montserrat-Regular", sans-serif;
+  transition: all 0.3s ease;
+}
 
-  .input-word-translate-transcription:focus {
-    outline: none;
-  }
+.add-word:hover {
+  color: var(--white);
+  background: var(--middle-gray);
+  transform: scale(1.05);
+}
 
-  .edit-word-button {
-    background: var(--main-gradient);
-    padding: 0.6rem;
-    border-radius: 1rem;
-    color: var(--white);
-    border: none;
-    cursor: pointer;
-    font-family: "Montserrat-Bold", sans-serif;
-    transition: all 0.3s ease;
-    width: 100%;
-  }
+.download-table {
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--white);
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  color: var(--black-gray);
+  border: none;
+  cursor: pointer;
+  font-family: "Montserrat-Regular", sans-serif;
+  transition: all 0.3s ease;
+}
 
-  .edit-word-button:hover {
-    transform: scale(1.05);
-  }
+.download-table:hover {
+  color: var(--white);
+  background: var(--middle-gray);
+  transform: scale(1.05);
+}
 
-  .delete-word-button {
-    background: var(--white);
-    padding: 0.6rem;
-    border-radius: 1rem;
-    color: var(--red);
-    border: none;
-    cursor: pointer;
-    font-family: "Montserrat-Bold", sans-serif;
-    box-shadow:
-      rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
-      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    transition: all 0.3s ease;
-    width: 100%;
-  }
+.buttons-menu {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  padding: 1rem 0 1rem 0;
+}
 
-  .delete-word-button:hover {
-    background: var(--red);
-    color: var(--white);
-    transform: scale(1.05);
-    transition: transform 0.4s ease-in-out;
-  }
+.input-word-translate-transcription {
+  font-family: "Montserrat-Regular", sans-serif;
+  font-size: 1rem;
+  padding: 1rem;
+  display: block;
+  width: 100%;
+  border: none;
+  color: var(--middle-dark-gray);
+  border-bottom: 0.1px solid var(--middle-dark-gray);
+  word-break: break-word;
+}
 
-  main {
-    padding: 2rem 1.5rem;
-  }
+.input-word-translate-transcription:focus {
+  outline: none;
+  border-bottom: 0.1px solid var(--green);
+}
 
+@media (min-width: 768px) {
   .main-title {
-    color: var(--black);
-    font-family: "Montserrat-Regular", sans-serif;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
+    padding-top: 3rem;
+    font-size: 2.5rem;
   }
 
-  .buttons-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .download-table {
-    border: none;
-    width: 100%;
-    font-family: "Montserrat-Bold", sans-serif;
-    background: none;
-    font-size: 1.5rem;
-    padding: 1rem 1rem;
-    border-radius: 2rem;
-    box-shadow:
-      rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
-      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    cursor: pointer;
-    color: var(--gray-blue);
-    transition: all 0.3s ease;
-  }
-
-  .download-table:hover {
-    background: var(--gray-blue);
-    color: var(--white);
-    transform: scale(1.05);
-    transition: transform 0.4s ease-in-out;
-  }
-
-  .add-word {
-    border: none;
-    width: 100%;
-    font-family: "Montserrat-Bold", sans-serif;
-    background: var(--main-gradient);
-    font-size: 1.5rem;
-    padding: 1rem 1rem;
-    border-radius: 2rem;
-    box-shadow:
-      rgba(94, 94, 94, 0.25) 0px 0.0625em 0.0625em,
-      rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-      rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-    cursor: pointer;
-    color: var(--white);
-    transition: all 0.3s ease;
-  }
-
-  .add-word:hover {
-    transform: scale(1.05);
-    transition: transform 0.4s ease-in-out;
-  }
-
-  .filter {
-    width: 100%;
-    margin-bottom: 2rem;
-    border: none;
-    border-bottom: 1px solid var(--middle-dark-gray);
-    font-family: "Montserrat-Regular", sans-serif;
-    font-size: 1.5rem;
-    padding: 10px 10px 10px 5px;
-    color: var(--middle-dark-gray);
-  }
-
-  .filter:focus {
-    outline: none;
-  }
-
-  .transcription {
-    color: var(--gray-blue);
-    white-space: normal;
-    word-break: break-word;
-  }
-
-  .bottom-section-items {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
+  .burger {
+    width: 2.4rem;
   }
 
   .item-words {
+    padding: 1.5rem;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 1rem;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow:
+      rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+      rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   }
 
   .left-section {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 0.5rem;
-    font-size: 1.2rem;
     width: 100%;
+    max-width: 200rem;
+    margin: 0 auto;
+    gap: 1.5rem;
   }
 
-  .right-section {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
+  .bottom-section-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
     width: 100%;
+    max-width: 200rem;
+    margin: 0 auto;
+  }
+
+  .add-word {
+    font-size: 1.4rem;
+    padding: 1.2rem;
+    border-radius: 2rem;
+  }
+
+  .download-table {
+    font-size: 1.4rem;
+    padding: 1.2rem;
+    border-radius: 2rem;
   }
 }
 </style>

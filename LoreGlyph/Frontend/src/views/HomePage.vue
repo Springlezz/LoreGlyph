@@ -2,7 +2,7 @@
   <div class="modal-overlay">
     <header class="header">
       <div class="left-header">
-        <img class="logo" src="../assets/cube_black_logo.svg" alt="logo" />
+        <img class="logo" src="../assets/cube_white_logo.svg" alt="logo" />
         <h1>LoreGlyph</h1>
       </div>
       <div class="right-header">
@@ -13,12 +13,29 @@
         >
           Регистрация
         </button>
-        <p>|</p>
         <button class="right-header-buttons" @click="openLogin" href="/login">
           Войти
         </button>
       </div>
     </header>
+    <div>
+      <div class="main-card">
+        <div class="main-image">
+          <img src="../assets/BackgroundCastle.svg" alt="Замок" />
+        </div>
+        <div class="main-image-content">
+          <h1 class="welcome-title">Слова, рожденные воображением</h1>
+          <h3 class="description-title">
+            Чтобы создать свой язык, вам нужно зарегистрироваться или войти в
+            свой аккаунт
+          </h3>
+          <button @click="openRegister" class="main-menu-button">
+            Зарегистрироваться
+          </button>
+          <button @click="openLogin" class="main-menu-button">Войти</button>
+        </div>
+      </div>
+    </div>
     <main>
       <div>
         <RegisterModal v-if="showRegister" @close="showRegister = false" />
@@ -30,33 +47,57 @@
           @open-reset="openReset"
         />
       </div>
-      <div class="left-section">
-        <div class="greetings">
-          <h1 class="greetings-titles">Добро пожаловать!</h1>
-          <h1 class="colored-black-text">
-            Здесь можно создать свой словарь слов, перевод и произношение для
-            <span class="colored-text-brown">своих игр</span>
-          </h1>
+
+      <div class="card-sections">
+        <div class="item-section">
+          <img class="icon-card" src="../assets/book.svg" />
+          <h3 class="title-card">Создание языков без ограничений</h3>
+          <p class="description-card">
+            Создавайте языки, добавляйте слова, добавляйте описания
+          </p>
         </div>
 
-        <h1 class="attention-text">
-          Чтобы создать свой язык, вам нужно зарегистрироваться или войти в
-          аккаунт
-        </h1>
-        <button @click="openRegister" class="main-menu-button">
-          Регистрация аккаунта
-        </button>
-        <button @click="openLogin" class="main-menu-button">
-          Войти в аккаунт
-        </button>
-      </div>
+        <div class="item-section">
+          <img class="icon-card" src="../assets/board.svg" />
+          <h3 class="title-card">Скачивайте таблицу слов</h3>
+          <p class="description-card">
+            Удобно экспортируйте и сохраняйте словарь
+          </p>
+        </div>
 
-      <div class="right-section">
-        <img
-          class="picture-with-elf"
-          src="../assets/pictures/generated.png"
-          alt="Изображение эльфов"
-        />
+        <div class="item-section">
+          <img class="icon-card" src="../assets/people.svg" />
+          <h3 class="title-card">Удобный инструмент</h3>
+          <p class="description-card">
+            Используйте для своих вселенных, ДнД партий и написания произведений
+          </p>
+        </div>
+      </div>
+      <h2 class="text-about-create">
+        Здесь можно создать свой словарь слов, перевод и произношение для своих
+        игр
+      </h2>
+
+      <div class="about-project-section">
+        <h1 class="about-project">О проекте</h1>
+        <p>
+          Привет! Я написала этот сайт, потому что сама захотела удобный
+          инструмент для друзей.<br />
+          Сейчас это первая версия, но в планах - регулярные обновления: новые
+          фичи, исправления и просто полезные мелочи.
+        </p>
+        <p>
+          Мне очень приятно, если вы пользуетесь проектом. Это вдохновляет
+          делать его лучше.
+        </p>
+        <p>Апдейты будут - обещаю!</p>
+        <h3 class="about-project">Что я добавлю?</h3>
+        <ul class="list">
+          <li>Английскую локализацию</li>
+          <li>Возможно создавать совместные языки, делиться ими</li>
+          <li>Возможность авторизоваться через соцсети</li>
+          <li>Возможность добавлять иероглифы, рисовать их</li>
+        </ul>
       </div>
     </main>
     <FooterComponent />
@@ -94,94 +135,8 @@ const openReset = () => {
 </script>
 
 <style scoped>
-p {
-  margin: 0;
-  color: var(--white);
-}
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--white);
-  padding: 15px;
-  border-radius: 20px;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: modalAppear 0.3s ease forwards;
-  width: calc(100% - 30px);
-  max-width: 100%;
+ul {
+  padding-left: 2rem;
 }
 
-main {
-  margin-top: 2rem;
-  padding: 0rem 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.greetings {
-  font-size: 1.2rem;
-  width: 100%;
-  word-break: break-word;
-  word-wrap: break-word;
-  white-space: normal;
-}
-
-.colored-black-text {
-  font-family: "Montserrat-Bold", sans-serif;
-  color: var(--black);
-}
-
-.colored-text-brown {
-  color: var(--light-brown);
-  font-family: "Montserrat-Bold", sans-serif;
-}
-
-.attention-text {
-  padding: 2rem 0rem;
-  font-family: "Montserrat-Light", sans-serif;
-  color: var(--black);
-  font-size: 1.2rem;
-  width: 100%;
-  word-break: break-word;
-  word-wrap: break-word;
-  white-space: normal;
-}
-
-.picture-with-elf {
-  height: auto;
-  width: 100%;
-  max-width: 100%;
-  border-radius: 2rem;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
-}
-
-.main-menu-button:hover {
-  transform: scale(1.1);
-  transition: transform 0.4s ease-in-out;
-}
-
-@media (min-width: 1025px) {
-  main {
-    padding: 8rem 2.5rem;
-    flex-direction: row;
-  }
-
-  .greetings {
-    width: 46rem;
-  }
-
-  .attention-text {
-    width: 36rem;
-    font-size: 1.5rem;
-  }
-
-  .picture-with-elf {
-    max-width: 60rem;
-  }
-}
 </style>

@@ -8,11 +8,12 @@
   );
   --white: #fff;
   --black: #000;
+  --black-gray: #181818;
   --middle-gray: #848484;
   --middle-dark-gray: #757575;
   --light-brown: #996c66;
   --dark-gray: #404656;
-  --red: #af0d0d;
+  --red: #c73131;
   --green: #0d8d0d;
   --gray-blue: #3F4861;
 }

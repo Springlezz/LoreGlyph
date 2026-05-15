@@ -48,7 +48,7 @@ namespace LoreGlyph.Controllers
         {
             var authDto = await _userService.ResetForgottenPasswordAsync(dto);
 
-            if (authDto == null)
+            if (authDto == null || !authDto)
             {
                 return BadRequest("Кодовое слово неверное");
             }

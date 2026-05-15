@@ -5,45 +5,54 @@
       @click="$router.push('/languages')"
       title="Вернуться на главную страницу"
     >
-      <img class="logo" src="../assets/cube_black_logo.svg" alt="logo" />
+      <img class="logo" src="../assets/cube_white_logo.svg" alt="logo" />
       <h1>LoreGlyph</h1>
     </div>
     <div class="right-header">
       <button @click="$router.push('/languages')" class="right-header-buttons">
         Вернуться
       </button>
-      <p>|</p>
       <button @click="logout" class="right-header-buttons">Выйти</button>
     </div>
   </header>
   <main>
-    <div class="center-information">
-      <img class="avatar-default" />
-      <div class="circle"></div>
-      <h1 class="title">{{ userName }}</h1>
-      <p class="information">Дата регистрации: {{ createdBy }}</p>
-    </div>
+    <h1 class="main-title">Мой аккаунт</h1>
+    <h1 class="warning-developer">Профиль и смена аватарок в разработке...</h1>
+
     <div class="sections">
-      <div class="left-sections">
-        <h1 class="title">Информация</h1>
-        <p class="information">{{ userName }}</p>
-        <p class="information">{{ login }}</p>
+      <div class="avatar-section">
+        <div class="avatar-download-section">
+          <img
+            class="avatar-image"
+            src="../assets/default-avatar.svg"
+            alt="avatar"
+          />
+          <button class="download-avatar-btn">Загрузить аватарку</button>
+        </div>
+        <h1 class="title">{{ userName }}</h1>
+        <p class="information">Дата регистрации: {{ createdBy }}</p>
       </div>
-      <div class="right-sections">
+
+      <div class="data-section">
+        <h1 class="title">Информация</h1>
+        <p class="information">Логин: {{ login }}</p>
+      </div>
+
+      <div class="password-section">
         <h1 class="title">Смена пароля</h1>
         <input v-model="oldPassword" placeholder="Введите старый пароль" />
         <input v-model="newPassword" placeholder="Введите новый пароль" />
+        <button @click="changePassword" class="save-changes-button">
+          Сменить пароль
+        </button>
       </div>
     </div>
-    <div class="sections">
-      <button @click="deleteAccount" class="warning-button">
-        Удалить аккаунт
-      </button>
-      <button @click="changePassword" class="save-changes-button">
-        Сохранить изменения
-      </button>
-    </div>
+
+    <button @click="deleteAccount" class="warning-button">
+      Удалить аккаунт
+    </button>
   </main>
+  <FooterComponent />
 </template>
 
 <script setup>
@@ -51,6 +60,8 @@ import { ref, onMounted } from "vue";
 import { userService } from "@/services/userService";
 import { authService } from "@/services/authService";
 import { useToast } from "vue-toastification";
+
+import FooterComponent from "@/components/FooterComponent.vue";
 
 const toast = useToast();
 
@@ -70,6 +81,7 @@ const changePassword = async () => {
     });
     if (!oldPassword.value || !newPassword.value) {
       toast.error("Заполните все поля");
+      return;
     }
 
     toast.success("Пароль изменён");
@@ -99,7 +111,9 @@ const getUserIdFromToken = () => {
 };
 
 const deleteAccount = async () => {
-  if (!confirm("Удалить профиль. Вы не сможете его восстановить")) return;
+  if (!confirm("Удалить профиль. Вы не сможете его восстановить")) {
+    return;
+  }
   const userId = getUserIdFromToken();
 
   try {
@@ -126,42 +140,183 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-main {
-  padding: 1.5rem 1rem;
-}
-
-.title {
-  font-family: "Montserrat-Bold", sans-serif;
-  font-size: 2rem;
+.warning-button {
+  display: block;
+  border: none;
+  color: var(--red);
+  font-size: 1.5rem;
+  font-family: "Montserrat-Regular", sans-serif;
   text-align: center;
-  margin-bottom: 1.5rem;
-  word-break: break-word;
+  margin: 1rem auto;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: var(--white);
+  box-shadow:
+    rgba(185, 33, 33, 0.74) 0px 1px 3px 0px,
+    rgba(160, 55, 55, 0.911) 0px 0px 0px 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: fit-content;
 }
 
-.circle {
-  width: 15rem;
-  height: 15rem;
-  border-radius: 50%;
-  background: var(--middle-dark-gray);
-  margin: 0 auto;
+.main-title {
+  padding-top: 5.5rem;
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+.warning-developer {
+  font-size: 1.2rem;
+  color: var(--middle-gray);
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem;
+  margin: 1rem auto;
+  max-width: 90%;
 }
 
 .sections {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 2rem;
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
   width: 100%;
-  margin-top: 1.5rem;
 }
 
-.center-information {
+.avatar-section,
+.data-section,
+.password-section {
+  background: var(--white);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.avatar-section:hover,
+.data-section:hover,
+.password-section:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.avatar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+}
+
+.avatar-download-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--middle-light-gray);
+}
+
+.download-avatar-btn {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 2rem;
+  color: var(--white);
+  background: var(--middle-gray);
+  cursor: pointer;
+  font-family: "Montserrat-Bold", sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.download-avatar-btn:hover {
+  background: var(--black-gray);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.download-avatar-btn:active {
+  transform: translateY(0);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-family: "Montserrat-Bold", sans-serif;
+  color: var(--black-gray);
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.information {
+  font-size: 1rem;
+  font-family: "Montserrat-Regular", sans-serif;
+  color: var(--middle-dark-gray);
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.password-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.password-section p {
+  font-size: 0.9rem;
+  color: var(--middle-gray);
+  margin: 0;
+  text-align: center;
+}
+
+.password-section input:focus {
+  outline: none;
+}
+
+.password-section input::placeholder {
+  color: var(--middle-dark-gray);
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.save-changes-button {
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 2rem;
+  background-color: var(--black-gray);
+  color: var(--white);
+  font-family: "Montserrat-Bold", sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   width: 100%;
+}
+
+.save-changes-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0.9;
+}
+
+.save-changes-button:active {
+  transform: translateY(0);
 }
 
 input {
@@ -170,7 +325,7 @@ input {
   margin: 0.8rem 0;
   padding: 1rem 1rem 1rem 0.5rem;
   display: block;
-  width: 110%;
+  width: 100%;
   border: none;
   border-bottom: 0.1px solid var(--middle-dark-gray);
   background: transparent;
@@ -187,122 +342,70 @@ input::placeholder {
   opacity: 0.7;
 }
 
-.information {
-  font-family: "Montserrat-Regular", sans-serif;
-  font-size: 1.4rem;
-  margin: 0.8rem 0;
-  padding: 1rem 1rem 1rem 0.5rem;
-  display: block;
-  width: 100%;
-  border: none;
-  color: var(--middle-dark-gray);
-  border-bottom: 0.1px solid var(--middle-dark-gray);
-  word-break: break-word;
-}
-
-.save-changes-button {
-  color: var(--green);
-  border: none;
-  font-family: "Montserrat-Bold", sans-serif;
-  background: none;
-  font-size: 1.4rem;
-  padding: 1.2rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.save-changes-button:hover {
-  transform: scale(1.02);
-  box-shadow:
-    rgba(0, 0, 0, 0.35) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.35) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-}
-
-.warning-button {
-  color: var(--red);
-  border: none;
-  font-family: "Montserrat-Bold", sans-serif;
-  background: none;
-  font-size: 1.4rem;
-  padding: 1.2rem 1rem;
-  border-radius: 2rem;
-  box-shadow:
-    rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-    rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.warning-button:hover {
-  transform: scale(1.02);
-  background: rgba(255, 0, 0, 0.05);
-  box-shadow:
-    rgba(255, 0, 0, 0.25) 0px 0.0625em 0.0625em,
-    rgba(255, 0, 0, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-}
 @media (min-width: 768px) {
-  main {
-    padding: 2.5rem 3rem;
+  .sections {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 200rem;
+    margin: 0 auto;
   }
 
-  .title {
-    font-size: 2.3rem;
-  }
-
-  .circle {
-    width: 20rem;
-    height: 20rem;
+  .main-title{
+    padding-top: 10rem;
   }
 
   .sections {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 5rem;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
 
-  .left-sections,
-  .right-sections {
-    width: auto;
-    min-width: 280px;
-    align-items: flex-start;
-  }
+.avatar-section,
+.data-section,
+.password-section {
+  background: var(--white);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  input {
-    font-size: 1.5rem;
-    margin: 1rem 0;
-    max-width: 350px;
-  }
+.avatar-section {
+  align-items: center;
+  justify-content: flex-start;
+}
 
-  .information {
-    font-size: 1.5rem;
-    margin: 1rem 0;
-    width: 100%;
-    max-width: 350px;
-  }
+.data-section {
+  justify-content: flex-start;
+}
 
-  .save-changes-button,
-  .warning-button {
-    font-size: 1.6rem;
-    padding: 1.5rem 2.5rem;
-    width: auto;
-    min-width: 250px;
-  }
+.password-section {
+  justify-content: space-between;
+}
 
-  .sections:last-of-type {
-    flex-direction: row;
-    justify-content: center;
-    gap: 2rem;
-  }
+.password-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.save-changes-button {
+  margin-top: auto;
+  width: 100%;
+}
 }
 </style>

@@ -1,12 +1,11 @@
 <template>
   <header class="header">
     <div class="left-header" title="Вернуться на главную страницу">
-      <img class="logo" src="../assets/cube_black_logo.svg" alt="logo" />
+      <img class="logo" src="../assets/cube_white_logo.svg" alt="logo" />
       <h1>LoreGlyph</h1>
     </div>
     <div class="right-header">
       <button @click="logout" class="right-header-buttons">Выйти</button>
-      <p>|</p>
       <button @click="goToProfile" class="right-header-buttons">Профиль</button>
     </div>
   </header>
@@ -16,58 +15,79 @@
       @close="showCreate = false"
       @created="loadLanguages"
     />
+    <span class="panorama"></span>
     <div class="welcome">
       <div class="left-section">
         <h1 class="greetings-titles">Добро пожаловать, {{ userName }}</h1>
         <h1 class="big-title">Мои языки</h1>
-        <h2 class="description-text">Выберите свои созданные языки</h2>
+        <h2 class="description-text">Выберите язык, чтобы начать</h2>
       </div>
       <div class="right-section">
+        <div class="search">
+          <input
+            v-model="filterQuery"
+            class="filter"
+            type="search"
+            placeholder="Поиск по языкам..."
+          />
+          <img class="loupe" src="../assets/loupe-search.svg" alt="search" />
+        </div>
+
         <button @click="showCreate = true" class="main-menu-button">
           Создать новый
         </button>
       </div>
     </div>
 
+    <span class="line"></span>
+    <h2 class="nothing-warning" v-if="languages.length === 0 && !filterQuery">
+      Упс. Тут ничего нет :(<br />Нажмите "Создать новый", чтобы создать язык
+    </h2>
+    <div
+      v-if="filteredLanguages.length === 0 && filterQuery"
+      class="nothing-warning"
+    >
+      <h3>По запросу "{{ filterQuery }}" ничего не найдено</h3>
+    </div>
+
     <div class="bottom-section-items">
       <div
         class="item-languages"
-        v-for="lang in languages"
+        v-for="lang in filteredLanguages"
         :key="lang.languageId"
       >
-        <img class="picture" src="../assets/pictures/image-for-reading.png" />
-
-        <div class="description">
-          <div class="left-item">
-            <h1 class="bold-text">
-              {{ lang.name }}
-            </h1>
-
-            <h2 class="description-text">
-              {{ lang.description }}
-            </h2>
-          </div>
-
-          <div class="right-item">
-            <button
-              @click="goToLanguage(lang.languageId)"
-              class="edit-language-button"
-            >
-              Редактировать
-            </button>
-
-            <button
-              class="delete-language"
-              @click="deleteLanguage(lang.languageId)"
-            >
-              Удалить
-            </button>
-          </div>
+        <img
+          @click="goToLanguage(lang.languageId)"
+          class="picture"
+          src="../assets/pictures/image-for-reading.png"
+        />
+        <div class="left-item">
+          <h1 class="bold-text">
+            {{ lang.name }}
+          </h1>
+          <h2 class="description-text">
+            {{ lang.description }}
+          </h2>
         </div>
-        <img class="line" src="../assets/Line.svg" />
+        <div class="buttons-dlt-edt">
+          <button
+            @click="goToLanguage(lang.languageId)"
+            class="edit-language-button"
+          >
+            Редактировать
+          </button>
+          <button
+            class="delete-language"
+            @click="deleteLanguage(lang.languageId)"
+          >
+            Удалить
+          </button>
+        </div>
+        <span class="line"></span>
       </div>
     </div>
   </main>
+  <FooterComponent />
 </template>
 
 <script setup>
@@ -76,6 +96,7 @@ import { useRouter } from "vue-router";
 import { languageService } from "@/services/languageService";
 import CreateLanguageModal from "@/components/CreateLanguageModal.vue";
 import { useToast } from "vue-toastification";
+import { computed } from "vue";
 
 import FooterComponent from "@/components/FooterComponent.vue";
 
@@ -88,8 +109,18 @@ const languages = ref([]);
 
 const showCreate = ref(false);
 
+const filterQuery = ref("");
+
+const filteredLanguages = computed(() => {
+  return languages.value.filter((language) =>
+    language.name.toLowerCase().includes(filterQuery.value.toLowerCase()),
+  );
+});
+
 const deleteLanguage = async (id) => {
-  if (!confirm("Удалить язык?")) return;
+  if (!confirm("Удалить язык?")) {
+    return;
+  }
 
   try {
     await languageService.delete(id);
@@ -125,33 +156,55 @@ const goToProfile = () => {
 </script>
 
 <style scoped>
-main {
-  padding: 1rem 1.6rem;
-}
-
-.big-title {
-  font-family: "Montserrat-Bold", sans-serif;
-  font-size: 2rem;
-}
-
-.greetings-titles {
-  font-size: 1.5rem;
-}
-
-.bold-text {
-  font-family: "Montserrat-Bold", sans-serif;
-}
-
-.right-header {
+.right-section {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
   align-items: center;
-  gap: 15px;
-  padding: 0 2rem;
+  text-align: center;
+  justify-content: center;
+  padding: 1rem 0 1rem 0;
+}
+.buttons-dlt-edt {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  padding: 1rem 0 1rem 0;
 }
 
-.description-text {
-  font-size: 1.2rem;
-  font-family: "Montserrat-Light", sans-serif;
+.delete-language {
+  background: var(--white);
+  color: var(--red);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: "Montserrat-Bold", sans-serif;
+  border: none;
+  box-shadow:
+    rgb(105, 11, 11) 0px 0.0625em 0.0625em,
+    rgba(255, 8, 8, 0.25) 0px 0.125em 0.5em,
+    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+  transition: all 0.3s ease;
+}
+
+.delete-language:hover {
+  background: var(--red);
+  color: var(--white);
+}
+
+.edit-language-button {
+  background: var(--black-gray);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: "Montserrat-Bold", sans-serif;
+  border: none;
+  transition: all 0.3s ease;
 }
 
 .picture {
@@ -159,31 +212,41 @@ main {
   width: 100%;
   max-width: 20rem;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
-.welcome {
+.bottom-section-items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.item-languages {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  gap: 1.5rem;
-  padding-bottom: 2rem;
+  justify-content: center;
+  width: 100%;
+  background: var(--white);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .description {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  text-align: center;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.right-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .left-item {
@@ -194,88 +257,65 @@ main {
   gap: 0.8rem;
 }
 
-.edit-language-button {
-  font-family: "Montserrat-Bold", sans-serif;
-  font-size: 1.3rem;
-  border: none;
-  background: var(--main-gradient);
-  color: var(--white);
-  padding: 1.5rem 1rem;
-  border-radius: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.main-menu-button {
+  font-size: 1rem;
+  padding: 1rem;
   width: 100%;
-  max-width: 100%;
 }
 
-.edit-language-button:hover {
-  transform: scale(1.05);
-  transition: transform 0.4s ease-in-out;
+.big-title {
+  font-family: "Baskerville-Regular", sans-serif;
+  font-size: 2.5rem;
 }
 
-.delete-language {
+.greetings-titles {
+  font-size: 1.5rem;
+  color: var(--middle-gray);
+  font-family: "Montserrat-ExtraLight", sans-serif;
+}
+
+.bold-text {
   font-family: "Montserrat-Bold", sans-serif;
-  font-size: 1.3rem;
-  border: none;
-  background-color: var(--white);
-  color: var(--red);
-  padding: 1.5rem 1rem;
-  border-radius: 2rem;
-  cursor: pointer;
-  box-shadow:
-    rgb(105, 11, 11) 0px 0.0625em 0.0625em,
-    rgba(255, 8, 8, 0.25) 0px 0.125em 0.5em,
-    rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
-  transition: all 0.3s ease;
-  width: 100%;
-  max-width: 100%;
 }
 
-.delete-language:hover {
-  transform: scale(1.05);
-  transition: transform 0.4s ease-in-out;
+.description-text {
+  font-size: 1.2rem;
+  font-family: "Baskerville-Regular", sans-serif;
 }
 
-.bottom-section-items {
+.welcome {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.item-languages {
-  width: 100%;
   text-align: center;
+  gap: 1.5rem;
+  padding: 2rem 0 1rem 0;
 }
 
 @media (min-width: 768px) {
+  .right-section {
+    flex-direction: row;
+  }
+  .picture {
+    height: auto;
+    width: 100%;
+    max-width: 30rem;
+    border-radius: 1rem;
+    cursor: pointer;
+  }
+
+  .bottom-section-items {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0rem;
+    padding: 1.5rem;
+  }
+  .main-menu-button {
+    font-size: 1.5rem;
+  }
+
   .welcome {
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .description {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
-  }
-
-  .right-item {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .right-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 0 2rem;
-  }
-  .left-item {
     align-items: flex-start;
     text-align: left;
   }
@@ -284,42 +324,11 @@ main {
   .delete-language {
     width: auto;
     padding: 2rem 1rem;
+    font-size: 1.2rem;
   }
 
-  .bottom-section-items {
-    flex-direction: row;
-    gap: 2rem;
-  }
   main {
     padding: 5rem 7.5rem;
-  }
-
-  .bottom-section-items {
-    gap: 4rem 20rem;
-  }
-
-  .item-languages {
-    width: 70rem;
-  }
-
-  .edit-language-button:hover,
-  .delete-language:hover {
-    transform: scale(1.1);
-  }
-  .picture {
-    height: auto;
-    width: 100%;
-    max-width: 50rem;
-    border-radius: 3rem;
-  }
-
-  .greetings-titles {
-    font-size: 2.5rem;
-  }
-
-  .item-languages {
-    width: auto;
-    max-width: 50rem;
   }
 }
 </style>

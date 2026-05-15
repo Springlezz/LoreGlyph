@@ -1,4 +1,7 @@
 ﻿using LoreGlyph.DTOs.Auth;
+using LoreGlyph.Repository;
+using LoreGlyph.Repository.Interfaces;
+using LoreGlyph.Services;
 using LoreGlyph.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +13,12 @@ namespace LoreGlyph.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IUserRepository _userRepository;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IUserRepository userRepository)
         {
             _authService = authService;
+            _userRepository = userRepository;
         }
 
         [HttpPost("register")]
@@ -22,6 +27,13 @@ namespace LoreGlyph.Controllers
         {
             try
             {
+                var existingUser = await _userRepository.GetByLoginAsync(dto.Login);
+
+                if (existingUser != null)
+                {
+                    return Conflict(existingUser);
+                }
+
                 var user = await _authService.RegisterAsync(dto);
                 return Ok(user);
 
@@ -53,7 +65,7 @@ namespace LoreGlyph.Controllers
         {
             var authDto = await _authService.ResetPasswordAsync(dto);
 
-            if (authDto == null)
+            if (authDto == null || !authDto)
             {
                 return BadRequest("Старый пароль неверный. Попробуйте еще раз");
             }
