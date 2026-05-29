@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LoreGlyph.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260506150808_init")]
-    partial class init
+    [Migration("20260529044023_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
