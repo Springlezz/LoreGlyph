@@ -4,6 +4,8 @@ export const wordService = {
   getAll(languageId) {
     return api.get(`/word/${languageId}`);
   },
+
+  getSharedWords: (token) => api.get(`/Word/shared-words/${token}`),
   create(languageId, wordData) {
     return api.post(`/word/${languageId}`, wordData);
   },

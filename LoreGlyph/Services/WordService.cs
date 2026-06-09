@@ -3,6 +3,7 @@ using LoreGlyph.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using LoreGlyph.Repository.Interfaces;
 using LoreGlyph.Repository.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LoreGlyph.Services
 {
@@ -138,6 +139,27 @@ namespace LoreGlyph.Services
             }
             
             return true;
+        }
+
+        public async Task<IEnumerable<WordDto>> GetSharedWordsAsync(string token)
+        {
+            var language = await _languageRepository.GetByShareTokenAsync(token);
+
+            if (language == null || !language.IsPublic)
+            {
+                return null;
+            }
+
+            var words = await _wordRepository.GetAllByLanguageIdAsync(language.Id);
+
+            return words
+                .OrderBy(w => w.Order)
+                .Select(w => new WordDto(
+                    w.Id,
+                    w.Text,
+                    w.Transcription,
+                    w.Translation,
+                    w.Order));
         }
     }
 }

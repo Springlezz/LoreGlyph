@@ -89,5 +89,57 @@ namespace LoreGlyph.Controllers
                 return BadRequest($"Не удалось удалить {languageId}{ex.Message}");
             }
         }
+        
+        [HttpPost("{languageId}/share")]
+        [Authorize]
+        public async Task<IActionResult> ShareLanguage(Guid languageId)
+        {
+            var userId = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var token = await _languageService.ShareLanguageAsync(
+                languageId,
+                userId);
+
+            return Ok(token);
+        }
+
+        [HttpDelete("{languageId}/share")]
+        [Authorize]
+        public async Task<IActionResult> UnshareLanguage(Guid languageId)
+        {
+            var userId = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result = await _languageService.UnshareLanguageAsync(
+                languageId,
+                userId);
+
+            if (!result)
+            {
+                return NotFound("Язык не найден");
+            }
+
+            return NoContent();
+        }
+        
+        [HttpGet("{languageId}/share")]
+        [Authorize]
+        public async Task<IActionResult> GetShareInfo(Guid languageId)
+        {
+            var userId = Guid.Parse(
+                User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result = await _languageService.GetShareInfoAsync(
+                languageId,
+                userId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 }

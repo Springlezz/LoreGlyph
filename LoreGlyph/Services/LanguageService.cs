@@ -1,4 +1,5 @@
 ﻿using LoreGlyph.DTOs.Language;
+using LoreGlyph.Helpers;
 using LoreGlyph.Repository.Entities;
 using LoreGlyph.Repository.Interfaces;
 using LoreGlyph.Services.Interfaces;
@@ -68,6 +69,58 @@ namespace LoreGlyph.Services
                 language.Id,
                 language.Name,
                 language.Description
+            );
+        }
+
+        public async Task<string> ShareLanguageAsync(Guid languageId, Guid userId)
+        {
+            var language = await _languageRepository.GetByIdAsync(languageId);
+
+            if (language == null || language.UserId != userId)
+            {
+                return string.Empty;
+            }
+
+            language.IsPublic = true;
+
+            if (string.IsNullOrEmpty(language.ShareToken))
+            {
+                language.ShareToken = LinkGeneration.GenerateToken();
+            }
+            
+            await _languageRepository.UpdateAsync(language);
+            return language.ShareToken;
+        }
+
+        public async Task<bool> UnshareLanguageAsync(Guid languageId, Guid userId)
+        {
+            var language =  await _languageRepository.GetByIdAsync(languageId);
+            
+            if (language == null || language.UserId != userId)
+            {
+                return false;
+            }
+            
+            language.IsPublic = false;
+            
+            await _languageRepository.UpdateAsync(language);
+            return true;
+        }
+        
+        public async Task<LanguageShareDto?> GetShareInfoAsync(
+            Guid languageId,
+            Guid userId)
+        {
+            var language = await _languageRepository.GetByIdAsync(languageId);
+
+            if (language == null || language.UserId != userId)
+            {
+                return null;
+            }
+
+            return new LanguageShareDto(
+                language.IsPublic,
+                language.ShareToken
             );
         }
     }

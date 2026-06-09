@@ -50,6 +50,11 @@ const routes = [
     name: "words",
     component: () => import("./views/WordsPage.vue"),
   },
+  {
+    path: "/shared-language/:token",
+    name: "shared-language",
+    component: () => import("./views/SharedLanguagePage.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -78,6 +83,11 @@ const isTokenValid = () => {
 
 router.beforeEach((to, from) => {
   const tokenValid = isTokenValid();
+
+  if (to.path.startsWith("/shared-language/")) {
+    return true;
+  }
+
   const publicRoutes = ["/", "/home"];
 
   if (!publicRoutes.includes(to.path) && !tokenValid) {

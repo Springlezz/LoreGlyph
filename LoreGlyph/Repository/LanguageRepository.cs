@@ -43,4 +43,9 @@ public class LanguageRepository : ILanguageRepository
         _context.Languages.Remove(language);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<LanguageEntity?> GetByShareTokenAsync(string token)
+    {
+        return await _context.Languages.FirstOrDefaultAsync(l => l.ShareToken == token && l.IsPublic);
+    }
 }

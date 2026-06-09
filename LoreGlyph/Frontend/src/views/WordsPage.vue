@@ -17,14 +17,29 @@
   </header>
   <main>
     <span class="panorama"></span>
-    <h1 class="main-title">Редактирование языка</h1>
+    <h1 class="main-title">Редактирование языка {{ languageName }}</h1>
 
     <div class="buttons-menu">
       <button @click="downloadTable" class="download-table">
         Скачать таблицу
       </button>
       <button @click="addWord" class="add-word">Добавить слово</button>
+
+      <button @click="toggleShare" class="share-btn">
+        <img class="share-icon" src="../assets/share.svg" alt="share" />
+
+        {{ shareInfo?.isPublic ? "Закрыть доступ" : "Поделиться" }}
+      </button>
+      <div
+        @click="copyToClipboard"
+        v-if="shareInfo?.isPublic"
+        class="share-link"
+      >
+        <p>Скопировать ссылку</p>
+        <img class="share-icon" src="../assets/copy.svg" alt="copy" />
+      </div>
     </div>
+
     <div class="search" id="search">
       <input
         v-model="filterQuery"
@@ -114,9 +129,13 @@ const toast = useToast();
 
 const route = useRoute();
 const languageId = ref(route.params.id);
+const languageName = ref("");
+
 const words = ref([]);
 const editingId = ref(null);
 const dragContainer = ref(null);
+
+const shareInfo = ref(null);
 
 let sortable = null;
 
@@ -145,11 +164,68 @@ const filteredWords = computed(() => {
     );
   });
 });
+
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(shareLink.value);
+  toast.success("Ссылка скопирована");
+};
+
+const toggleShare = async () => {
+  try {
+    if (shareInfo.value?.isPublic) {
+      await languageService.unshare(languageId.value);
+
+      shareInfo.value.isPublic = false;
+
+      toast.success("Доступ закрыт");
+    } else {
+      const res = await languageService.share(languageId.value);
+
+      shareInfo.value = {
+        isPublic: true,
+        shareToken: res.data,
+      };
+
+      toast.success("Доступ открыт");
+    }
+  } catch {
+    toast.error("Ошибка изменения доступа");
+  }
+};
+
+const loadShareInfo = async () => {
+  try {
+    const res = await languageService.getShareInfo(languageId.value);
+
+    shareInfo.value = res.data;
+  } catch {
+    toast.error("Не удалось получить информацию об открытом доступе");
+  }
+};
+
 const saveToLocalStorage = () => {
   if (!words.value.length && localStorage.getItem(STORAGE_KEY)) {
     return;
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(words.value));
+};
+
+const shareLink = computed(() => {
+  return `${window.location.origin}/shared-language/${shareInfo.value.shareToken}`;
+});
+
+const loadLanguage = async () => {
+  try {
+    const res = await languageService.getAll();
+
+    const language = res.data.find((l) => l.languageId === languageId.value);
+
+    if (language) {
+      languageName.value = language.name;
+    }
+  } catch (e) {
+    toast.error("Ошибка загрузки языка");
+  }
 };
 
 const loadWords = async () => {
@@ -321,8 +397,9 @@ onMounted(() => {
     toast.error("ID языка не указан");
     return;
   }
-
+  loadLanguage();
   loadWords();
+  loadShareInfo();
 
   if (dragContainer.value) {
     sortable = new Sortable(dragContainer.value, {
@@ -378,6 +455,57 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.share {
+  display: block;
+  width: 100%;
+}
+
+.share-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+  width: 100%;
+  cursor: pointer;
+}
+
+.share-link:hover {
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--white);
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  color: var(--black-gray);
+  border: none;
+  cursor: pointer;
+  font-family: "Montserrat-Regular", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.share-btn:hover {
+  color: var(--black);
+  background: var(--light-gray);
+  transform: scale(1.05);
+}
+
+.share-icon {
+  width: 1.2rem;
+  flex-shrink: 0;
+}
+
 .main-title {
   padding-top: 1rem;
 }
@@ -507,18 +635,27 @@ onUnmounted(() => {
 }
 
 .download-table:hover {
-  color: var(--white);
-  background: var(--middle-gray);
+  color: var(--black);
+  background: var(--light-gray);
   transform: scale(1.05);
 }
 
 .buttons-menu {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: center;
-  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.buttons-menu button {
+  width: 100%;
+}
+
+.share-link {
+  display: flex;
   justify-content: center;
-  padding: 1rem 0 1rem 0;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .input-word-translate-transcription {
@@ -539,6 +676,54 @@ onUnmounted(() => {
 }
 
 @media (min-width: 768px) {
+  .buttons-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .buttons-menu button {
+    width: auto;
+  }
+
+  .share-link {
+    width: auto;
+    margin-left: 1rem;
+  }
+
+  .share {
+    display: inline-block;
+  }
+
+  .share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    padding: 1rem;
+    border-radius: 2rem;
+    background-color: var(--white);
+    box-shadow:
+      rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+      rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    color: var(--black-gray);
+    border: none;
+    cursor: pointer;
+    font-family: "Montserrat-Regular", sans-serif;
+    transition: all 0.3s ease;
+  }
+
+  .share-btn:hover {
+    color: var(--white);
+    background: var(--middle-gray);
+    transform: scale(1.05);
+  }
+
+  .share-icon {
+    width: 1.2rem;
+  }
+
   .main-title {
     padding-top: 3rem;
     font-size: 2.5rem;
@@ -580,14 +765,14 @@ onUnmounted(() => {
   }
 
   .add-word {
-    font-size: 1.4rem;
-    padding: 1.2rem;
+    font-size: 1.1rem;
+    padding: 1rem;
     border-radius: 2rem;
   }
 
   .download-table {
-    font-size: 1.4rem;
-    padding: 1.2rem;
+    font-size: 1.1rem;
+    padding: 1rem;
     border-radius: 2rem;
   }
 }

@@ -13,6 +13,10 @@ namespace LoreGlyph.Repository.Entities
         [Column("user_id")]
         public Guid UserId { get; set; }
         public virtual UserEntity User { get; set; }
+        
+        [Column("link")]
+        public bool IsPublic { get; set; }
+        public string? ShareToken { get; set; }
 
         public IList<WordEntity> Words { get; set; } = new List<WordEntity>();
     }

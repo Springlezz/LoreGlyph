@@ -119,5 +119,21 @@ namespace LoreGlyph.Controllers
                 return BadRequest($"Ошибка при обновлении порядка слов: {ex.Message}");
             }
         }
+
+        [HttpGet("shared-words/{token}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetSharedWordsAsync(string token)
+        {
+            try
+            {
+                var words = await _wordService.GetSharedWordsAsync(token);
+                return Ok(words);
+            }
+
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 }

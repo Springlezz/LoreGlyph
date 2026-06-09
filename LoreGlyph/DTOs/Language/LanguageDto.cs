@@ -16,4 +16,9 @@
         string Name,
         string Description
     );
+    
+    public record LanguageShareDto(
+        bool IsPublic,
+        string? ShareToken
+    );
 }

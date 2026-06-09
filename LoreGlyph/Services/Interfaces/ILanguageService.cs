@@ -8,5 +8,8 @@ namespace LoreGlyph.Services.Interfaces
         Task<LanguageDto> CreateAsync(CreateLanguageDto dto, Guid userId);
         Task<bool> UpdateAsync(Guid languageId, UpdateLanguageDto dto, Guid userId);
         Task<bool> DeleteAsync(Guid languageId, Guid userId);
+        Task<string> ShareLanguageAsync(Guid languageId, Guid userId);
+        Task<bool> UnshareLanguageAsync(Guid languageId, Guid userId);
+        Task<LanguageShareDto?> GetShareInfoAsync(Guid languageId, Guid userId);
     }
 }
