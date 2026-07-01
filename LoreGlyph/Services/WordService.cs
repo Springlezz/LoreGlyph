@@ -26,7 +26,7 @@ namespace LoreGlyph.Services
             {
                 return Enumerable.Empty<WordDto>();
             }
-            
+
             var words = await _wordRepository.GetAllByLanguageIdAsync(languageId);
 
             return words
@@ -34,7 +34,7 @@ namespace LoreGlyph.Services
                 .Select(w => new WordDto(w.Id, w.Text, w.Transcription, w.Translation, w.Order));
         }
 
-        
+
         public async Task<WordDto> CreateAsync(CreateWordDto dto, Guid languageId, Guid userId)
         {
             var language = await _languageRepository.GetByIdAsync(languageId);
@@ -52,35 +52,35 @@ namespace LoreGlyph.Services
                 Translation = dto.Translation,
                 Order = dto.Order
             };
-            
+
             await _wordRepository.AddAsync(word);
 
             return new WordDto(
-                    word.Id,
-                    word.Text,
-                    word.Transcription,
-                    word.Translation,
-                    word.Order
-                );
+                word.Id,
+                word.Text,
+                word.Transcription,
+                word.Translation,
+                word.Order
+            );
         }
 
         public async Task<bool> DeleteAsync(Guid wordId, Guid userId)
         {
             var word = await _wordRepository.GetByIdAsync(wordId);
-            
+
             if (word == null)
             {
                 return false;
             }
-            
+
             var language = await _languageRepository.GetByIdAsync(word.LanguageId);
 
             if (language == null || language.UserId != userId)
             {
                 return false;
             }
-            
-            await  _wordRepository.DeleteAsync(word);
+
+            await _wordRepository.DeleteAsync(word);
             return true;
         }
 
@@ -92,7 +92,7 @@ namespace LoreGlyph.Services
             {
                 return false;
             }
-            
+
             var language = await _languageRepository.GetByIdAsync(word.LanguageId);
 
             if (language == null)
@@ -111,14 +111,14 @@ namespace LoreGlyph.Services
         public async Task<bool> UpdateOrderAsync(IList<UpdateWordOrderDto> dto, Guid languageId, Guid userId)
         {
             var language = await _languageRepository.GetByIdAsync(languageId);
-            
+
             if (language == null || language.UserId != userId)
             {
                 return false;
             }
-            
+
             var words = await _wordRepository.GetAllByLanguageIdAsync(languageId);
-            
+
             if (words.Count == 0)
             {
                 return false;
@@ -132,16 +132,16 @@ namespace LoreGlyph.Services
                     word.Order = item.Order;
                 }
             }
-            
+
             foreach (var word in words)
             {
                 await _wordRepository.UpdateAsync(word);
             }
-            
+
             return true;
         }
 
-        public async Task<IEnumerable<WordDto>> GetSharedWordsAsync(string token)
+        public async Task<ShareLanguageDto> GetSharedWordsAsync(string token)
         {
             var language = await _languageRepository.GetByShareTokenAsync(token);
 
@@ -151,15 +151,11 @@ namespace LoreGlyph.Services
             }
 
             var words = await _wordRepository.GetAllByLanguageIdAsync(language.Id);
-
-            return words
+            var wordsDtos = words
                 .OrderBy(w => w.Order)
-                .Select(w => new WordDto(
-                    w.Id,
-                    w.Text,
-                    w.Transcription,
-                    w.Translation,
-                    w.Order));
+                .Select(w => new WordDto(w.Id, w.Text, w.Transcription, w.Translation, w.Order));
+            
+            return new ShareLanguageDto(language.User.Name, language.User.AvatarPath, language.Name, wordsDtos); 
         }
-    }
+}
 }

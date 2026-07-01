@@ -3,6 +3,7 @@ using LoreGlyph.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using LoreGlyph.DTOs.User;
 
 namespace LoreGlyph.Controllers
 {
@@ -73,6 +74,24 @@ namespace LoreGlyph.Controllers
             catch (Exception ex)
             {
                 return BadRequest("Не удалось удалить пользователя");
+            }
+        }
+
+        [HttpPost("avatar")]
+        [Authorize]
+        public async Task<IActionResult> UploadAvatar([FromForm] UpdateAvatarDto dto)
+        {
+            try
+            {
+                var userId = Guid.Parse( User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                await _userService.UploadAvatarAsync(userId, dto.Avatar);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

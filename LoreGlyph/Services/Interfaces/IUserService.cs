@@ -8,5 +8,6 @@ namespace LoreGlyph.Services.Interfaces
         Task<bool> ResetForgottenPasswordAsync(ResetForgottenPasswordDto dto);
         Task<AboutUser?> GetMe(Guid userId);
         Task<bool> DeleteAsync(Guid userId);
+        Task UploadAvatarAsync(Guid userId, IFormFile avatar);
     }
 }

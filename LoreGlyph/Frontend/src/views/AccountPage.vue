@@ -17,17 +17,29 @@
   </header>
   <main>
     <h1 class="main-title">Мой аккаунт</h1>
-    <h1 class="warning-developer">Профиль и смена аватарок в разработке...</h1>
+    <h1 class="warning-developer">Профиль в разработке...</h1>
 
     <div class="sections">
       <div class="avatar-section">
         <div class="avatar-download-section">
           <img
             class="avatar-image"
-            src="../assets/default-avatar.svg"
+            :src="avatarUrl"
+            @error="onAvatarError"
             alt="avatar"
           />
-          <button class="download-avatar-btn">Загрузить аватарку</button>
+          <input
+            ref="avatarInput"
+            type="file"
+            accept="image/*"
+            style="display: none"
+            @change="uploadAvatar"
+          />
+
+          <button class="download-avatar-btn" @click="avatarInput.click()">
+            Загрузить аватарку
+          </button>
+
         </div>
         <h1 class="title">{{ userName }}</h1>
         <p class="information">Дата регистрации: {{ createdBy }}</p>
@@ -56,12 +68,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { userService } from "@/services/userService";
 import { authService } from "@/services/authService";
 import { useToast } from "vue-toastification";
+import { fileUrl } from "@/utils/url";
 
 import FooterComponent from "@/components/FooterComponent.vue";
+import defaultAvatar from "@/assets/default-avatar.svg";
 
 const toast = useToast();
 
@@ -71,6 +85,40 @@ const createdBy = ref("");
 
 const oldPassword = ref("");
 const newPassword = ref("");
+
+const avatarInput = ref(null);
+const avatarPath = ref("");
+
+const avatarUrl = computed(() => fileUrl(avatarPath.value) || defaultAvatar);
+
+const onAvatarError = (event) => {
+  event.target.src = defaultAvatar;
+};
+
+const uploadAvatar = async (event) => {
+  const file = event.target.files[0];
+  if (!file){
+     return;
+  }
+
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  try {
+    await userService.uploadAvatar(formData);
+
+    await loadUser();
+
+    toast.success("Аватарка загружена");
+  } catch (e) {
+    toast.error("Ошибка загрузки аватарки");
+  }
+};
+
+const loadUser = async () => {
+  const res = await userService.getMe();
+  avatarPath.value = res.data.avatarPath;
+};
 
 const changePassword = async () => {
   try {
@@ -133,6 +181,7 @@ onMounted(async () => {
     userName.value = data.userName;
     login.value = data.login;
     createdBy.value = new Date(data.createdBy).toLocaleDateString();
+    avatarPath.value = data.avatarPath;
   } catch (e) {
     toast.error("Ошибка загрузки профиля:", e);
   }
@@ -353,59 +402,61 @@ input::placeholder {
     margin: 0 auto;
   }
 
-  .main-title{
+  .main-title {
     padding-top: 10rem;
   }
 
   .sections {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: stretch;
-  justify-content: center;
-  gap: 2rem;
-  padding: 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
-}
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+  }
 
-.avatar-section,
-.data-section,
-.password-section {
-  background: var(--white);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  flex: 1;
-  min-width: 250px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+  .avatar-section,
+  .data-section,
+  .password-section {
+    background: var(--white);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
 
-.avatar-section {
-  align-items: center;
-  justify-content: flex-start;
-}
+  .avatar-section {
+    align-items: center;
+    justify-content: flex-start;
+  }
 
-.data-section {
-  justify-content: flex-start;
-}
+  .data-section {
+    justify-content: flex-start;
+  }
 
-.password-section {
-  justify-content: space-between;
-}
+  .password-section {
+    justify-content: space-between;
+  }
 
-.password-section {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
+  .password-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
 
-.save-changes-button {
-  margin-top: auto;
-  width: 100%;
-}
+  .save-changes-button {
+    margin-top: auto;
+    width: 100%;
+  }
 }
 </style>

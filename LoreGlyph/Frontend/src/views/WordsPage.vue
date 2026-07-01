@@ -523,7 +523,7 @@ onUnmounted(() => {
   padding: 1rem;
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
-  margin-top: 2rem;
+  margin: 2rem 0;
 }
 
 .left-section {
@@ -690,6 +690,7 @@ onUnmounted(() => {
   .share-link {
     width: auto;
     margin-left: 1rem;
+    font-size: 1.3rem;
   }
 
   .share {
@@ -758,7 +759,7 @@ onUnmounted(() => {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    padding: 1.5rem;
+    padding: 1.5rem 0;
     width: 100%;
     max-width: 200rem;
     margin: 0 auto;

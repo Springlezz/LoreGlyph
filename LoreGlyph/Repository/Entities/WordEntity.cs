@@ -15,6 +15,5 @@ namespace LoreGlyph.Repository.Entities
         [Column("language_id")]
         public Guid LanguageId { get; set; }
         public virtual LanguageEntity? Language { get; set; }
-        //public string Symbol {get;set;} in next update
     }
 }

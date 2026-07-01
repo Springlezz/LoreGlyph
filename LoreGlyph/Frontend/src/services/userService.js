@@ -4,4 +4,5 @@ export const userService = {
   resetPassword: (dto) => api.post("/User/reset-forgotten-password", dto),
   deleteAccount: (userId) => api.delete(`/User/${userId}`),
   getMe: () => api.get("/User/me"),
+  uploadAvatar: (formData) => api.post("/User/avatar", formData),
 };

@@ -10,11 +10,12 @@
     (
         string UserName,
         string Login,
-        DateTimeOffset CreatedBy
+        DateTimeOffset CreatedBy,
+        string? AvatarPath
     );
     
     public record UpdateAvatarDto
     (
-        string AvatarPath
+        IFormFile? Avatar
     );
 }

@@ -18,22 +18,41 @@
 
   <main v-else>
     <span class="panorama"></span>
-    <h1 class="main-title">С вами поделились языком</h1>
 
-    <div class="buttons-menu">
-      <button @click="downloadTable" class="download-table">
-        Скачать таблицу
-      </button>
+    <h1 class="title-share">С вами поделились языком "{{ languageName }}"</h1>
+
+    <div class="section-author-download">
+      <div class="left-section-author-download">
+        <div class="about-author">
+          <h1>Автор: {{ username }}</h1>
+          <img
+            class="mini-avatar"
+            :src="avatarUrl || '/src/assets/default-avatar.svg'"
+          />
+        </div>
+      </div>
+
+      <div class="center-section-author-download">
+        <div class="search" id="search">
+          <input
+            v-model="filterQuery"
+            class="filter"
+            type="search"
+            placeholder="Поиск по словам..."
+          />
+          <img class="loupe" src="../assets/loupe-search.svg" alt="search" />
+        </div>
+      </div>
+
+      <div class="right-section-author-download">
+        <div class="buttons-menu">
+          <button @click="downloadTable" class="download-table">
+            Скачать таблицу
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="search" id="search">
-      <input
-        v-model="filterQuery"
-        class="filter"
-        type="search"
-        placeholder="Поиск по словам..."
-      />
-      <img class="loupe" src="../assets/loupe-search.svg" alt="search" />
-    </div>
+
     <span class="line"></span>
 
     <h2 class="nothing-warning" v-if="words.length === 0 && !filterQuery">
@@ -72,6 +91,11 @@ import { useRoute } from "vue-router";
 import * as XLSX from "xlsx";
 import { wordService } from "@/services/wordService";
 import ErrorComponent from "@/components/ErrorComponent.vue";
+import { fileUrl } from "@/utils/url";
+
+const username = ref("");
+const avatarUrl = ref(null);
+const languageName = ref("");
 
 const route = useRoute();
 const token = route.params.token;
@@ -101,15 +125,17 @@ const loadSharedData = async () => {
   try {
     const res = await wordService.getSharedWords(token);
 
-    if (!res.data || res.data.length === 0) {
+    if (!res.data?.words) {
       hasError.value = true;
       return;
     }
 
-    words.value = res.data;
+    username.value = res.data.authorName;
+    avatarUrl.value = fileUrl(res.data.authorAvatarUrl);
+    languageName.value = res.data.languageName;
+    words.value = res.data.words;
   } catch (e) {
     hasError.value = true;
-    console.error(e);
   } finally {
     isLoading.value = false;
   }
@@ -135,8 +161,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.main-title {
-  padding-top: 1rem;
+.section-author-download {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .panorama {
@@ -148,8 +177,7 @@ onMounted(() => {
   padding: 1rem;
   border-radius: 1rem;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
-  margin-top: 2rem;
-  justify-items: center;
+  margin: 2rem 0;
 }
 
 .left-section {
@@ -161,16 +189,7 @@ onMounted(() => {
   flex-wrap: wrap;
 }
 
-.left-section h3,
-.left-section .transcription {
-  margin: 0;
-  word-wrap: break-word;
-  word-break: break-word;
-  white-space: normal;
-  max-width: 100%;
-}
-
-.left-section .transcription {
+.transcription {
   color: var(--middle-gray);
   font-style: italic;
 }
@@ -186,6 +205,7 @@ onMounted(() => {
   border: none;
   cursor: pointer;
   font-family: "Montserrat-Regular", sans-serif;
+  font-size: 1.2rem;
   transition: all 0.3s ease;
 }
 
@@ -205,9 +225,11 @@ onMounted(() => {
 }
 
 @media (min-width: 768px) {
-  .main-title {
-    padding-top: 3rem;
-    font-size: 2.5rem;
+  .section-author-download {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
   }
 
   .item-words {
@@ -235,15 +257,15 @@ onMounted(() => {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    padding: 1.5rem;
+    padding: 1.5rem 0;
     width: 100%;
     max-width: 200rem;
     margin: 0 auto;
   }
 
   .download-table {
-    font-size: 1.4rem;
-    padding: 1.2rem;
+    font-size: 1.1rem;
+    padding: 1rem;
     border-radius: 2rem;
   }
 }

@@ -31,4 +31,11 @@
         Guid WordId,
         int Order
     );
+
+    public record ShareLanguageDto(
+        string AuthorName,
+        string? AuthorAvatarUrl,
+        string LanguageName,
+        IEnumerable<WordDto> Words
+    );
 }

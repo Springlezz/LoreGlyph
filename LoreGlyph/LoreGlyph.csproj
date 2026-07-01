@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Frontend\" />
+    <Folder Include="wwwroot\uploads\avatars\" />
   </ItemGroup>
 
 </Project>

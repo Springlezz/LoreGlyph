@@ -9,6 +9,6 @@ namespace LoreGlyph.Services.Interfaces
         Task<bool> DeleteAsync(Guid wordId, Guid userId);
         Task<bool> UpdateAsync(Guid wordId, UpdateWordDto dto);
         Task<bool> UpdateOrderAsync (IList<UpdateWordOrderDto> dto, Guid userId, Guid languageId);
-        Task<IEnumerable<WordDto>> GetSharedWordsAsync(string token);
+        Task<ShareLanguageDto> GetSharedWordsAsync(string token);
     }
 }

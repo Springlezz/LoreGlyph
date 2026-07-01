@@ -46,6 +46,8 @@ public class LanguageRepository : ILanguageRepository
 
     public async Task<LanguageEntity?> GetByShareTokenAsync(string token)
     {
-        return await _context.Languages.FirstOrDefaultAsync(l => l.ShareToken == token && l.IsPublic);
+        return await _context.Languages
+            .Include(l => l.User)
+            .FirstOrDefaultAsync(l => l.ShareToken == token && l.IsPublic);
     }
 }

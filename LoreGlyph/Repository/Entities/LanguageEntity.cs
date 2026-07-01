@@ -18,6 +18,9 @@ namespace LoreGlyph.Repository.Entities
         public bool IsPublic { get; set; }
         public string? ShareToken { get; set; }
 
+        [Column("image_path")]
+        public string? ImagePath { get; set; }
+        
         public IList<WordEntity> Words { get; set; } = new List<WordEntity>();
     }
 }

@@ -38,6 +38,10 @@ namespace LoreGlyph.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("text")
+                        .HasColumnName("image_path");
+
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean")
                         .HasColumnName("link");

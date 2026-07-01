@@ -11,6 +11,35 @@ main {
   padding: 0rem 2rem;
 }
 
+/* share elements */
+
+.title-share{
+  margin: 1rem 0 1rem 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  font-family: "Montserrat-Bold", sans-serif;
+}
+
+.about-author {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 0.76rem;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* avatars */
+.mini-avatar {
+  border-radius: 4rem;
+  width: 3rem;
+  height: 3rem;
+}
 
 /* search input */
 .search {
@@ -38,13 +67,17 @@ main {
   padding: 1rem 1rem 1rem 3rem;
   font-size: 1rem;
   font-family: "Montserrat-Regular", sans-serif;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  box-shadow:
+    rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
   transition: all 0.3s ease;
 }
 
 .filter:focus {
   outline: none;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 6px 24px 0px, rgba(0, 0, 0, 0.12) 0px 0px 0px 2px;
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.12) 0px 0px 0px 2px;
 }
 
 .loupe {
@@ -99,7 +132,6 @@ main {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -110,6 +142,7 @@ main {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  cursor: pointer;
 }
 
 .logo {
@@ -342,6 +375,14 @@ main {
 /*Language page*/
 
 @media (min-width: 768px) {
+  .title-share{
+    font-size: 2rem;
+    margin-top: 3rem;
+  }
+  .about-author {
+    justify-content: left;
+  }
+
   /*Homepage*/
   .about-project {
     font-size: 3rem;
@@ -429,7 +470,7 @@ main {
 
   /* main */
   main {
-    padding: 0rem 5rem;
+    padding: 0rem 6rem;
   }
 
   .main-image img {

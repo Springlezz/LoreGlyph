@@ -134,6 +134,8 @@ namespace LoreGlyph
 
             app.MapControllers();
 
+            app.UseStaticFiles();
+
             app.Run();
         }
     }
