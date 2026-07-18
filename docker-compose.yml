@@ -24,6 +24,8 @@ services:
     ports:
       - "5248:8080"
       - "8081:8081"
+    volumes:
+      - wwwroot_data:/app/wwwroot
     environment:
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
       - Jwt__Key=${JWT_KEY}
@@ -43,7 +45,7 @@ services:
     ports:
       - "8000:80"
     environment:
-      - VUE_APP_API_URL=http://loreglyph:8080/api
+      - VITE_API_URL=/api/
     depends_on:
       - loreglyph
     networks:
@@ -55,3 +57,4 @@ networks:
 
 volumes:
   postgres_data:
+  wwwroot_data:
