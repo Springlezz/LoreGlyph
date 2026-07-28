@@ -41,7 +41,7 @@ namespace LoreGlyph.Services
 
             if (language == null)
             {
-                throw new Exception("Язык не найден");
+                throw new KeyNotFoundException("Язык не найден");
             }
 
             var word = new WordEntity

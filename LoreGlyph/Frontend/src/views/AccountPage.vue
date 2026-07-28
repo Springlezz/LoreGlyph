@@ -31,7 +31,7 @@
           <input
             ref="avatarInput"
             type="file"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png,.webp"
             style="display: none"
             @change="uploadAvatar"
           />
@@ -39,7 +39,6 @@
           <button class="download-avatar-btn" @click="avatarInput.click()">
             Загрузить аватарку
           </button>
-
         </div>
         <h1 class="title">{{ userName }}</h1>
         <p class="information">Дата регистрации: {{ createdBy }}</p>
@@ -97,8 +96,8 @@ const onAvatarError = (event) => {
 
 const uploadAvatar = async (event) => {
   const file = event.target.files[0];
-  if (!file){
-     return;
+  if (!file) {
+    return;
   }
 
   const formData = new FormData();
@@ -111,7 +110,9 @@ const uploadAvatar = async (event) => {
 
     toast.success("Аватарка загружена");
   } catch (e) {
-    toast.error("Ошибка загрузки аватарки");
+    const message = e.response?.data || "Ошибка загрузки аватарки";
+    
+    toast.error(message);
   }
 };
 
@@ -202,9 +203,7 @@ onMounted(async () => {
   padding: 1rem;
   border-radius: 1rem;
   background: var(--white);
-  box-shadow:
-    rgba(185, 33, 33, 0.74) 0px 1px 3px 0px,
-    rgba(160, 55, 55, 0.911) 0px 0px 0px 1px;
+  border: 0.1rem solid var(--red);
   cursor: pointer;
   transition: all 0.3s ease;
   width: fit-content;

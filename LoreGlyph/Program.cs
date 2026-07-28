@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using LoreGlyph.Repository;
 using LoreGlyph.Repository.Interfaces;
+using LoreGlyph.Helpers;
 using IAuthService = LoreGlyph.Services.Interfaces.IAuthService;
 
 
@@ -20,7 +21,8 @@ namespace LoreGlyph
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            
+            builder.Services.Configure<FileUploadOptions>(builder.Configuration.GetSection("FileUpload"));
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -34,25 +36,23 @@ namespace LoreGlyph
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
-    });
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
             });
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -75,11 +75,12 @@ namespace LoreGlyph
                     };
                 });
 
+
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ILanguageService, LanguageService>();
             builder.Services.AddScoped<IWordService, WordService>();
-            
+
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
@@ -90,8 +91,8 @@ namespace LoreGlyph
                 options.AddDefaultPolicy(policy =>
                 {
                     policy.AllowAnyOrigin()
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
             });
 
@@ -118,9 +119,9 @@ namespace LoreGlyph
                 }
             }
 
-                //app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
-                app.UseDefaultFiles();
+            app.UseDefaultFiles();
 
             app.UseStaticFiles();
 

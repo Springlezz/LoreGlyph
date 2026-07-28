@@ -25,12 +25,12 @@ namespace LoreGlyph.Controllers
             try
             {
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                
+
                 if (string.IsNullOrEmpty(userIdClaim))
                 {
                     return BadRequest("UserId не найден в токене");
                 }
-                   
+
                 var userId = Guid.Parse(userIdClaim);
 
                 var result = await _userService.GetMe(userId);
@@ -69,6 +69,7 @@ namespace LoreGlyph.Controllers
                 {
                     return NotFound("Пользователь не найден");
                 }
+
                 return Ok("Удалено");
             }
             catch (Exception ex)
@@ -78,12 +79,13 @@ namespace LoreGlyph.Controllers
         }
 
         [HttpPost("avatar")]
+        [RequestSizeLimit(5 * 1024 * 1024)]
         [Authorize]
         public async Task<IActionResult> UploadAvatar([FromForm] UpdateAvatarDto dto)
         {
             try
             {
-                var userId = Guid.Parse( User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
                 await _userService.UploadAvatarAsync(userId, dto.Avatar);
 

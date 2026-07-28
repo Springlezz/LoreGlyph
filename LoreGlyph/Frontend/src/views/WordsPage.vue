@@ -455,57 +455,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.share {
-  display: block;
-  width: 100%;
-}
-
-.share-link {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 0.75rem;
-  width: 100%;
-  cursor: pointer;
-}
-
-.share-link:hover {
-  transform: scale(1.05);
-  transition: all 0.3s ease;
-}
-
-.share-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 1rem;
-  background-color: var(--white);
-  box-shadow:
-    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
-    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-  color: var(--black-gray);
-  border: none;
-  cursor: pointer;
-  font-family: "Montserrat-Regular", sans-serif;
-  transition: all 0.3s ease;
-}
-
-.share-btn:hover {
-  color: var(--black);
-  background: var(--light-gray);
-  transform: scale(1.05);
-}
-
-.share-icon {
-  width: 1.2rem;
-  flex-shrink: 0;
-}
-
 .main-title {
   padding-top: 1rem;
 }

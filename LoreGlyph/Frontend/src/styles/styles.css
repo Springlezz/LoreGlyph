@@ -11,9 +11,60 @@ main {
   padding: 0rem 2rem;
 }
 
-/* share elements */
+/****** Share elements ******/
 
-.title-share{
+.share {
+  display: block;
+  width: 100%;
+}
+
+.share-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+  width: 100%;
+  cursor: pointer;
+}
+
+.share-link:hover {
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--white);
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  color: var(--black-gray);
+  border: none;
+  cursor: pointer;
+  font-family: "Montserrat-Regular", sans-serif;
+  transition: all 0.3s ease;
+}
+
+.share-btn:hover {
+  color: var(--black);
+  background: var(--light-gray);
+  transform: scale(1.05);
+}
+
+.share-icon {
+  width: 1.2rem;
+  flex-shrink: 0;
+}
+
+.title-share {
   margin: 1rem 0 1rem 0;
   display: flex;
   flex-direction: row;
@@ -34,14 +85,14 @@ main {
   margin-top: 1rem;
 }
 
-/* avatars */
+/****** avatars ******/
 .mini-avatar {
   border-radius: 4rem;
   width: 3rem;
   height: 3rem;
 }
 
-/* search input */
+/****** search input ******/
 .search {
   position: relative;
   width: 100%;
@@ -59,6 +110,8 @@ main {
   font-family: "Montserrat-ExtraLight", sans-serif;
   text-align: center;
 }
+
+/****** filter input ******/
 
 .filter {
   width: 100%;
@@ -95,7 +148,7 @@ main {
   outline: none;
 }
 
-/* line */
+/****** line ******/
 
 .line {
   display: block;
@@ -104,6 +157,8 @@ main {
   background-color: var(--middle-gray);
   margin: 1rem 0;
 }
+
+/****** panorama ******/
 
 .panorama {
   margin-top: 4rem;
@@ -119,7 +174,7 @@ main {
   transform: translateX(-50%);
 }
 
-/* Хедер */
+/****** Header ******/
 
 .header {
   position: fixed;
@@ -173,7 +228,7 @@ main {
   align-items: center;
 }
 
-/* Модальные окна */
+/* Modal windows */
 
 .modal {
   position: fixed;
@@ -247,7 +302,7 @@ main {
   margin: 0.5rem 0;
 }
 
-/*C homepage*/
+/******* Homepage *******/
 
 .about-project-section {
   text-align: left;
@@ -372,10 +427,10 @@ main {
   transition: transform 0.4s ease-in-out;
 }
 
-/*Language page*/
+/****** Language page ******/
 
 @media (min-width: 768px) {
-  .title-share{
+  .title-share {
     font-size: 2rem;
     margin-top: 3rem;
   }
@@ -445,7 +500,6 @@ main {
     font-size: 1.5rem;
   }
 
-  /* header */
   .main-menu-button {
     font-size: 1.5rem;
     padding: 1rem;
