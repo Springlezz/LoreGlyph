@@ -52,7 +52,7 @@ a:hover {
   }
 
   .footer {
-    padding: 2rem 6rem;
+    padding: 2rem 4.5rem;
   }
 }
 </style>
